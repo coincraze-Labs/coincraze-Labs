@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.25",
+  "importer": "image",
+  "imported": true,
+  "uuid": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda@6c48a",
+      "displayName": "微信",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "repeat",
+        "wrapModeT": "repeat",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda",
+        "visible": false
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda@f9941",
+      "displayName": "微信",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 1,
+        "trimX": 4,
+        "trimY": 2,
+        "width": 76,
+        "height": 76,
+        "rawWidth": 84,
+        "rawHeight": 82,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -38,
+            -38,
+            0,
+            38,
+            -38,
+            0,
+            -38,
+            38,
+            0,
+            38,
+            38,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            4,
+            80,
+            80,
+            80,
+            4,
+            4,
+            80,
+            4
+          ],
+          "nuv": [
+            0.047619047619047616,
+            0.04878048780487805,
+            0.9523809523809523,
+            0.04878048780487805,
+            0.047619047619047616,
+            0.975609756097561,
+            0.9523809523809523,
+            0.975609756097561
+          ],
+          "minPos": [
+            -38,
+            -38,
+            0
+          ],
+          "maxPos": [
+            38,
+            38,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.11",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": true,
+    "hasAlpha": true,
+    "redirect": "4a6cee12-75a5-42f3-b5ac-3b63ab092bda@f9941"
+  }
+}
