@@ -16,6 +16,8 @@ export class UIManager {
         challengeFail: "challengeFail",
         challengeSuccess: "challengeSuccess",
         levelUp: "levelUp",
+        rankView: "rankView",
+        taskView: "taskView",
     }
 
      public static EEventName = {

@@ -2,6 +2,7 @@ import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite } from 
 import { UIManager } from '../UIManager';
 import { gameData } from '../gameData';
 import { LanauageManager } from '../LanauageManager';
+import { EventManger } from '../EventManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('shopView')
@@ -22,13 +23,24 @@ export class shopView extends Component {
     @property(Prefab)  
     itempfb: Prefab = null;
 
+    timeSeconds:number = 1;
+
     private info:any[];
     onEnable() {
         this.refresh();
+        EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
+    }
+
+    onDisable() {
+        EventManger.eventTarget.off(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
     }
 
     update(deltaTime: number) {
-        
+        this.timeSeconds -= deltaTime;
+        if (this.timeSeconds < 0){
+            this.timeSeconds = 1;
+            this.coinLab.string = LanauageManager.getCoinNumString(gameData.saveData.coin);
+        }
     }
 
     refresh(){
@@ -37,9 +49,17 @@ export class shopView extends Component {
 
         this.shopSp.node.active = !gameData.isBackNotShop;
         this.backpackSp.node.active = gameData.isBackNotShop
-
-        this.info = gameData.isBackNotShop? gameData.saveData.backList: gameData.saveData.shopList;
-        this.info = LanauageManager.shopItemList;
+        this.info = [];
+        if (gameData.isBackNotShop){
+            this.info = gameData.saveData.backList;
+        }else{
+            for (let index = 0; index < LanauageManager.shopConfig.length; index++) {
+                let element = LanauageManager.shopConfig[index];
+                if (element.is_shop){
+                    this.info.push(element);
+                }
+            }
+        }
         if (!this.info){
             return;
         }
@@ -58,7 +78,13 @@ export class shopView extends Component {
                 this.itemContent.addChild(item);
             }
             item.active = true;
-            item.getComponent('shopItem')?.refresh(itemData);
+            if (gameData.isBackNotShop){
+                itemData = LanauageManager.getShopItemData(itemData.id)
+                item.getComponent('shopItem')?.refresh(itemData);
+            }else{
+                item.getComponent('shopItem')?.refresh(itemData);
+            }
+            
         }
     }
 

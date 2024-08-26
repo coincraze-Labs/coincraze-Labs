@@ -1,6 +1,6 @@
-import { _decorator, Component, game, Node, Sprite } from 'cc';
+import { _decorator, assetManager, Component, game, ImageAsset, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { HttpClient } from './net/HttpClient';
-import { ShopItemData } from './LanauageManager';
+import { randItemData, ShopItemData } from './LanauageManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('gameData')
@@ -22,10 +22,6 @@ export class gameData extends Component {
 
     public static isChanllenge= false;
 
-    public static isBindTwitter = false;
-
-    public static isBindMoneyBag = false;
-
     public static isPlayMusic = true;
 
     public static isPlaySound = true;
@@ -40,23 +36,20 @@ export class gameData extends Component {
 
     public static levelSeconds:number = 0;
 
+    public static refreshCoinTime:number = 0;
+
     public static isChanllengeShare = false;
 
-    public static getWxOutSelectIndex(){
-        var ind:number = -1;
-        for (let index = 0; index < this.wxLevelArr.length; index++) {
-            if (gameData.saveData.curLevel >= this.wxLevelArr[index]){
-                ind = Math.max(ind, index);
-            }
-        }
-        if (ind >= 0){
-            ind = gameData.saveData.wxoutNum;
-        }
-        return ind
-    }
-    
+    public static popupTipItemId:number = 0;
+
+    //--------------------task--------------------
+
+    public static isBindTwitter = false;
+
+    public static isBindWallet = false;
+
     public static saveDataClick(type:number = 2){
-        HttpClient.getInstance().sendPasLevel(gameData.saveData.addMoney, gameData.saveData.addGold, type);
+        //HttpClient.getInstance().sendPasLevel(gameData.saveData.addMoney, gameData.saveData.addGold, type);
         gameData.saveData.addGold = 0;
         gameData.saveData.addMoney = 0;
     }
@@ -73,40 +66,21 @@ export class gameData extends Component {
         return showLevel;
     }
 
-    public static getShowGolde(isReal:boolean = true):number{
-        var gold = 0;
-        if (isReal){
-            gold = gameData.saveData.gold
-        }else{
-            gold = gameData.saveData.gold + gameData.saveData.addGold;
-        }
-        return Math.max(this.getInitNum(gold, 1000), 0);
-    }
 
-     public static getShowMoney(isReal:boolean = true):number{
-        var money = 0;
-        if (isReal){
-            money = gameData.saveData.coin
-        }else{
-            money = gameData.saveData.coin + gameData.saveData.addMoney;
-        }
-        return Math.max(this.getInitNum(money, 100), 0);
-    }
 
-    public static setGold(){
-        gameData.saveData.gold = Math.floor(gameData.saveData.gold*1000)/1000;
-
-        gameData.saveData.addGold = Math.round(gameData.saveData.addGold*1000)/1000;
-
-        gameData.saveData.coin = Math.floor(gameData.saveData.coin*100)/100;
-
-        gameData.saveData.addMoney = Math.round(gameData.saveData.addMoney*100)/100;
-    }
-
-    public static getInitNum(num:number, num2:number = 100):number{
-        return Math.floor(num*num2)/num2;
-    }
 //------------------------------------------------------------------------------------------------
+    public static getInitNum(num:number, num2:number = 100):number{
+        return Math.round(num*num2)/num2;
+    }
+
+    public static getArrivalTime(time:number){
+        let arrival = time - Math.floor(Date.now()/1000);
+        if (arrival < 0){
+            arrival = 0;
+        }
+        return arrival;
+    }
+
     public static getZeroTime():number{
         let now = new Date();  
    
@@ -130,7 +104,14 @@ export class gameData extends Component {
 
         let h1 = (hours < 10) ? '0' + hours.toString() : hours.toString();  
         let m1 = (minutes < 10) ? '0' + minutes.toString() : minutes.toString();  
-        let s1 = (secs < 10) ? '0' + secs.toFixed(0) : secs.toFixed(0);   
+        let s1 = (secs < 10) ? '0' + secs.toFixed(0) : secs.toFixed(0);  
+        
+        if (hours == 0){
+            return  `${m1}:${s1}`;
+        }
+        if (hours == 0 && minutes == 0){
+            return  `${s1}`;
+        }
  
         return  `${h1}:${m1}:${s1}`;
     }
@@ -149,15 +130,28 @@ export class gameData extends Component {
         return `${h1}:${m1}:${s1}`;;
     }
 
-    public static replaceHead(sp:Sprite){
-
+    public static replaceHead(sp:Sprite, remoteUrl:string){
+        if (remoteUrl == undefined || remoteUrl == null){
+            return;
+        }
+        // assetManager.loadRemote<ImageAsset>(remoteUrl, function (err, imageAsset) {
+        //     if (err){
+        //         console.log("加载失败" + err);
+        //         return;
+        //     }
+        //     const spriteFrame = new SpriteFrame();
+        //     const texture = new Texture2D();
+        //     texture.image = imageAsset;
+        //     spriteFrame.texture = texture;
+        //     sp.spriteFrame = spriteFrame;
+        // });
     }
 
+    
     public static getExpSum(): number{
         let level = gameData.saveData.curLevel;
         return (level+1)*100*0.6;
     }
-
 //--------------------------------------------------------------------------------------------------
     start() {
         this.arrTypeLevel = [
@@ -175,21 +169,21 @@ export class gameData extends Component {
     }
 
     getItemNumByLevel(level:number){
-        var itemNum:number = 30;
+        var itemNum:number = gameData.saveData.initNum*3;
         var stageNum = this.getStageNum(level);
 
         if(this.arrPosLevel[stageNum]){
             itemNum = this.arrPosLevel[stageNum].length;
         }else{
-            itemNum = itemNum + stageNum*3*3;
+            itemNum = itemNum + stageNum*gameData.saveData.stateNum*3;//9
         }
 
         var isBoss = this.getIsBoss(level);
         if (gameData.isChanllenge){
-            itemNum += 90;//90
+            itemNum += gameData.saveData.challengeNum*3;//90
         }
         else if (isBoss){
-            itemNum += 30;
+            itemNum += gameData.saveData.bossNum*3;//30
         }
        
         return itemNum;
@@ -257,25 +251,25 @@ export enum popupLabType{
     hpPopup = 2,
     hookPopup = 3,        
     offlineCardPopup = 4, 
-    boostCardPopup = 5,   
+    boostCardPopup = 5,  
+    itemPopup = 6, 
 }
 
 export enum popupCommonType{
     exit = 1,      
-    disconnect = 2,      
+    disConnectTwitter = 2,   
+    disConnectWalletr = 3,  
+    offLineCoin = 3,    
 }
 
 export enum coinType{
     coin1 = 1,      
     coin2 = 2,
-    coin3 = 2,        
+    coin3 = 3,        
 }
 
 export class SaveData  {
     gold: number = 0;
-
-    curLevel:number = 1;
-
 
     addMoney:number = 0;
 
@@ -311,24 +305,69 @@ export class SaveData  {
 
     taskAdArr:number[] = [0,0,0];
 
-    //------------------------------------------------------------
-    hpNum:number = 3;
+    //-------------------------user-----------------------------------
+    user_id:number;
+
+    userName:string;
+
+    head:string;
+
+    //-------------------------gameinfo-----------------------------------
+    userLevel:number = 0;
+
+    hpNum:number = 0;
 
     expNum:number = 0;
 
-    userLevel:number = 0;
-
     coin: number = 0;
+
+    addCoin: number = 0;
 
     coin2: number = 0;
 
     coin3: number = 0;
 
-    isChallenged:boolean = false;
+    offline_rewards:number = 0;
 
-    shopList:any[] = [];
+    boost_card_remaining_time:number = 0
+
+    offline_card_remaining_time:number = 0;
+
+     //-------------------------game-----------------------------------
+
+    curLevel:number = 1;
+
+    game_time_consuming:number = 0;
+
+    //----------------------------task--------------------------------------
+
+    isChallenged:boolean = false;
 
     backList:any[] = [];
 
+    detail_task:number[] = [];
+
+    daily_task:number[] = [];
+
+    detail_task_isRecive:number[] = [];
+
+    daily_task_isRecive:number[] = [];
+
+    //-----------------------rank---------------------------------------------
+
+    rankList:randItemData[] = [];
+
+    selfRank:randItemData;
+
     inivitId:string = "456SFGR1545SFGRA";
+
+    //------------------------------------------------------------
+
+    initNum:number = 10;
+
+    stateNum:number = 3;
+
+    bossNum:number = 10;
+
+    challengeNum:number = 30;
 }

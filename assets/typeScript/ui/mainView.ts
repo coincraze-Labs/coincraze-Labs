@@ -1,8 +1,10 @@
 import { _decorator, Component, Label, Node, ProgressBar, Sprite } from 'cc';
-import { gameData, popupLabType } from '../gameData';
+import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { LanauageManager } from '../LanauageManager';
 import { EventManger } from '../EventManger';
 import { UIManager } from '../UIManager';
+import { blinkAnima } from '../animation/blinkAnima';
+import { TgManager } from '../TgManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('mainView')
@@ -29,9 +31,6 @@ export class mainView extends Component {
     @property(Label)  
     challTimeLab: Label = null;
 
-    @property(Label)  
-    onhookLab: Label = null;
-
     @property(Node)  
     userInfo: Node = null;
 
@@ -47,9 +46,37 @@ export class mainView extends Component {
     @property([Label])  
     labArr: Label[] = [];
 
+    @property(blinkAnima)  
+    coinBlink: blinkAnima = null;
+
+    @property(blinkAnima)  
+    expBlink: blinkAnima = null;
+
+    @property(blinkAnima)  
+    hpBlink: blinkAnima = null;
+
+    @property(Node)  
+    offLine: Node = null;
+
+    @property(Label)  
+    offLineLab: Label = null;
+
+    @property(Node)  
+    boost: Node = null;
+
+    @property(Label)  
+    boostLab: Label = null;
+
     diffSeconds:number = 0;
 
     timeoff:number = 1;
+
+    timeSeconds:number = 1;
+
+    protected start(): void {
+        EventManger.eventTarget.on(EventManger.EEventName.BLINK_ANIMATION, this.blikAnima, this);
+
+    }
 
     onEnable() {
         this.refresh();
@@ -72,19 +99,30 @@ export class mainView extends Component {
                     this.challTimeLab.string = gameData.getLeftTime(this.diffSeconds) + " RESET";  
                 }
             }
-        }   
+        }
+
+        this.timeSeconds -= deltaTime;
+        if (this.timeSeconds < 0){
+            this.timeSeconds = 1;
+            this.coinLab.string = LanauageManager.getCoinNumString(gameData.saveData.coin);
+
+            this.boost.active = gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) > 0;
+            if (this.boost.active){
+                this.boostLab.string = gameData.getLeftTime(gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time));
+            }  
+        }
     }
 
     onBtnClick(event: Event, str:string){
         if (str == "task"){
-
+            UIManager.open(UIManager.uiNamePath.taskView);
         }
         else if (str == "share"){
             gameData.isChanllengeShare = false;
             UIManager.open(UIManager.uiNamePath.popupShare);
         }
         else if (str == "range"){
-
+            UIManager.open(UIManager.uiNamePath.rankView);
         }
         else if (str == "shop"){
             gameData.isBackNotShop = false;
@@ -109,10 +147,20 @@ export class mainView extends Component {
             this.userInfo.active = !this.userInfo.active;
         }
         else if (str == "twitter"){
-            
+            if (gameData.isBindTwitter){
+                LanauageManager.popupCommonlType = popupCommonType.disConnectTwitter;
+                UIManager.open(UIManager.uiNamePath.popupCommonBtn);
+            }else{
+                TgManager.connectTwitter();
+            }
         }
         else if (str == "moneyBag"){
-
+            if (gameData.isBindWallet){
+                LanauageManager.popupCommonlType = popupCommonType.disConnectWalletr;
+                UIManager.open(UIManager.uiNamePath.popupCommonBtn);
+            }else{
+                TgManager.connectWallet();
+            }
         }
         else if (str == "challPopup"){
             LanauageManager.popupLabelType = popupLabType.challPopup
@@ -127,14 +175,20 @@ export class mainView extends Component {
             UIManager.open(UIManager.uiNamePath.popupLabel);
         }
         else if (str == "offlinePopup"){
-            LanauageManager.popupLabelType = popupLabType.offlineCardPopup
+            LanauageManager.popupLabelType = popupLabType.itemPopup;
+            gameData.popupTipItemId = 2;
+            UIManager.open(UIManager.uiNamePath.popupLabel);
+        }
+        else if (str == "bostPopup"){
+            LanauageManager.popupLabelType = popupLabType.itemPopup;
+            gameData.popupTipItemId = 1;
             UIManager.open(UIManager.uiNamePath.popupLabel);
         }
     }
 
     public refresh(){
 
-        gameData.replaceHead(this.head);
+        gameData.replaceHead(this.head, gameData.saveData.head);
 
         this.levelPross.progress = gameData.saveData.expNum / gameData.getExpSum();
 
@@ -142,7 +196,7 @@ export class mainView extends Component {
 
         this.hpLab.string = gameData.saveData.hpNum.toString();
 
-        this.coinLab.string = gameData.saveData.coin.toString();
+        this.coinLab.string = LanauageManager.getCoinNumString(gameData.saveData.coin);
 
         let strIds:number[] = [4, 6, 5, 7, 10, 9, 8];
         for (let index = 0; index < this.labArr.length; index++) {
@@ -154,12 +208,30 @@ export class mainView extends Component {
 
         this.chall.active = !gameData.saveData.isChallenged;
 
-        this.userNameLab.string = gameData.saveData.wxName;
+        this.userNameLab.string = gameData.saveData.userName;
 
-        this.userTwitterLab.string = LanauageManager.getDesStrById( gameData.isBindTwitter? 62: 61 );
+        this.userTwitterLab.string = LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
 
-        this.userBagLab.string = LanauageManager.getDesStrById( gameData.isBindTwitter? 62: 61 );
+        this.userBagLab.string = LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
 
+        this.offLine.active = gameData.saveData.offline_card_remaining_time > 0;
+        if (this.offLine.active){
+            this.offLineLab.string = gameData.getLeftTime(gameData.saveData.offline_card_remaining_time);
+        }
+    }
+
+    blikAnima(type:number){
+        if (this.node.active){
+            if (type == 1){
+                this.coinBlink.startBlinkOne();
+            }
+            if (type == 2){
+                this.hpBlink.startBlinkOne();
+            }
+            if (type == 3){
+                this.expBlink.startBlinkOne();
+            }
+        }
     }
 }
 

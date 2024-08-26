@@ -29,7 +29,7 @@ export class topCom extends Component {
 
     refresh(){
         if (this.head.node.active){
-            gameData.replaceHead(this.head);
+            gameData.replaceHead(this.head,gameData.saveData.head);
         }
 
         if (this.levelPross.node.active){

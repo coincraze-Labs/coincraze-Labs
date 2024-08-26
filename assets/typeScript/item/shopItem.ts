@@ -1,6 +1,6 @@
 import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
-import { gameData } from '../gameData';
+import { gameData, popupLabType } from '../gameData';
 import { UIManager } from '../UIManager';
 import { EventManger } from '../EventManger';
 const { ccclass, property } = _decorator;
@@ -30,7 +30,7 @@ export class shopItem extends Component {
 
     private itemData:ShopItemData
 
-    private isBack:boolean = false;
+    private isBackPack:boolean = false;
 
     protected onEnable(): void {
         this.buyNum = 1;
@@ -43,33 +43,41 @@ export class shopItem extends Component {
             return;
         }
 
-        this.isBack = gameData.isBackNotShop;
+        this.isBackPack = gameData.isBackNotShop;
 
-        this.numNode.active = !this.isBack;
-        this.coinSp.node.active = !this.isBack;
+        this.numNode.active = !this.isBackPack;
+        this.coinSp.node.active = !this.isBackPack;
 
         LanauageManager.loadImage("image/shopItem/" + this.itemData.icon, this.iconSp);
 
-        this.nameLab.string = LanauageManager.getDesStrById(this.itemData.nameId);
+        this.nameLab.string = LanauageManager.getDesStrById(this.itemData.name_id);
 
-        if (this.isBack){
+        if (this.isBackPack){
             this.refreshBack();
         }
         else{
             this.refreshShop();
-            LanauageManager.loadImage("image/shopItem/coin" + this.itemData.coinType, this.coinSp);
+            LanauageManager.loadImage("image/shopItem/coin" + this.itemData.coin_type, this.coinSp);
         } 
     }
 
     refreshBack(){
-
+        this.coinLab.string = LanauageManager.getItemNumById(this.itemData.id).toString();
     }
 
     refreshShop(){
-        if (!this.isBack){
+        if (!this.isBackPack){
             this.numLab.string = this.buyNum.toString();
         }
-        this.coinLab.string = LanauageManager.getCoinNumString(this.itemData.coinNum * this.buyNum);
+        this.coinLab.string = LanauageManager.getCoinNumString(this.itemData.coin_num * this.buyNum);
+    }
+
+    onItemTipClick(){
+        if (this.itemData.is_tip){
+            gameData.popupTipItemId = this.itemData.id;
+            LanauageManager.popupLabelType = popupLabType.itemPopup;
+            UIManager.open(UIManager.uiNamePath.popupLabel);
+        }
     }
 
     onAddBtnClick(){
@@ -86,17 +94,35 @@ export class shopItem extends Component {
     }
 
     onBuyClick(){
-        if (this.isBack){
-            if (this.itemData.canUse){
+        if (this.isBackPack){
+            if (this.itemData.can_use && LanauageManager.getItemNumById(this.itemData.id) > 0){
+                if (this.itemData.id == 1 && gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) > 0){
+                    EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(109).replace("&1", LanauageManager.getDesStrById(this.itemData.name_id)));
+                    return;
+                }
+                if (this.itemData.id == 2 && gameData.saveData.offline_card_remaining_time > 0){
+                    EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(109).replace("&1", LanauageManager.getDesStrById(this.itemData.name_id)));
+                    return;
+                }
+
                 gameData.curBuyShopData = this.itemData;
                 UIManager.open(UIManager.uiNamePath.popupUseBtn);
             }else{
                 EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(69));
             }
         }else{
-            gameData.curBuyShopData = this.itemData;
-            gameData.curBuyCount = this.buyNum;
-            UIManager.open(UIManager.uiNamePath.popupShopBtn);
+            if (this.itemData.coin_type != 2){
+                gameData.curBuyShopData = this.itemData;
+                gameData.curBuyCount = this.buyNum;
+                UIManager.open(UIManager.uiNamePath.popupBuyItem);
+            }
+            else if (LanauageManager.getCoinNumByType(this.itemData.coin_type) >= this.itemData.coin_num * this.buyNum){
+                gameData.curBuyShopData = this.itemData;
+                gameData.curBuyCount = this.buyNum;
+                UIManager.open(UIManager.uiNamePath.popupShopBtn);
+            }else{
+                EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(68));
+            }
         }
     }
 }

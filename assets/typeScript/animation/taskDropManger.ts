@@ -32,7 +32,7 @@ export class taskDropManger extends Component {
 
     refresh(){
 
-        this.goldNumLabel.string =  gameData.getShowGolde().toString();
+        //this.goldNumLabel.string =  gameData.getShowGolde().toString();
     }
 
     drop(fromIndex:number,coinNum:number, isRefresh:boolean = true){
@@ -42,7 +42,7 @@ export class taskDropManger extends Component {
         //gameData.saveData.taskGold = gameData.getInitNum(gameData.saveData.taskGold + coinNum);
         pfb = this.goldPfb
         target = this.target;
-        gameData.setGold()
+        //gameData.setGold()
         if (pfb && target){
             var prefab = instantiate(pfb);
             prefab.parent = this.node;

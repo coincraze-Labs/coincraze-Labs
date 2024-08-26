@@ -3,6 +3,7 @@ import { UIManager } from '../UIManager';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { EventManger } from '../EventManger';
+import { HttpClient } from '../net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupShopBtn')
@@ -41,8 +42,8 @@ export class popupShopBtn extends Component {
 
         this.titleLab.string = LanauageManager.getDesStrById(65);
         this.desLab.string = LanauageManager.getDesStrById(67);
-        this.coinLab.string = LanauageManager.getCoinNumString(this.itemData.coinNum * this.buyNum);
-        LanauageManager.loadImage("image/shopItem/coin" + this.itemData.coinType, this.coinSp);
+        this.coinLab.string = LanauageManager.getCoinNumString(this.itemData.coin_num * this.buyNum);
+        LanauageManager.loadImage("image/shopItem/coin" + this.itemData.coin_type, this.coinSp);
     }
 
     onCloseClick(){
@@ -50,11 +51,8 @@ export class popupShopBtn extends Component {
     }
 
     onYesClick(){
-        if (LanauageManager.getCoinNumByType(this.itemData.coinType) >= this.itemData.coinNum * this.buyNum){
-
-        }else{
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(68));
-        }
+        HttpClient.getInstance().sendBuyShopItem(this.itemData.id, this.buyNum);
+        this.onCloseClick();
     }
 }
 

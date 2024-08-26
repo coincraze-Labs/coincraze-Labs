@@ -1,6 +1,6 @@
 import { _decorator, Component, Node, Prefab, instantiate, input, Input, EventTouch, UITransform, Vec3 , Vec2, Color, Sprite, tween, Label, AudioSource, AudioClip, sys, NodePool, random, randomRange, randomRangeInt, Size, EditBox, native} from 'cc';
 import { block } from './block';
-import { gameData, getPanelType, moneyType, SaveData } from './gameData';
+import { gameData, getPanelType, moneyType, popupCommonType, SaveData } from './gameData';
 import { WECHAT } from 'cc/env';
 import { coinDropManger } from './animation/coinDropManger';
 import { AndroidSdk } from './AndroidSdk';
@@ -9,6 +9,7 @@ import { HttpClient } from './net/HttpClient';
 import { levelView } from './ui/levelView';
 import { UIManager } from './UIManager';
 import { LanauageManager } from './LanauageManager';
+import { mainView } from './ui/mainView';
 const { ccclass, property } = _decorator;
 
 @ccclass('game')
@@ -43,6 +44,9 @@ export class game extends Component {
 
     @property({type:[AudioClip]})
     arrAudio = []
+
+    @property({type:[AudioClip]})
+    arrMusic = []
 
     @property({type:Node})
     getMoneyPanel = null
@@ -130,6 +134,7 @@ export class game extends Component {
     gameType: number;
 
     audioSource: AudioSource;
+
     isEditing: boolean = false;
     numTypeEdit: number;
     numBlockEditMove: number;
@@ -160,6 +165,11 @@ export class game extends Component {
     }
 
     start() {
+
+        if (gameData.saveData.offline_rewards > 0){
+            LanauageManager.popupCommonlType = popupCommonType.offLineCoin
+            UIManager.open(UIManager.uiNamePath.popupCommonBtn);
+        }
         this.levelmain.active = false;
         this.mainView.active = true;
         this.isWX = WECHAT
@@ -187,6 +197,7 @@ export class game extends Component {
         this.createBlocksEdit()
         this.newLevelReset();
         gameData.resetLevelData();
+        this.schedule(this.updateCoinTime, 1);  
         this.init()
 
         if(AndroidSdk.isTempTest && AndroidSdk.isAndroid){
@@ -199,10 +210,13 @@ export class game extends Component {
 
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_TIP, this.showTip, this);
+        EventManger.eventTarget.on(EventManger.EEventName.MUSIC_CHANGE_STATE, this.changetMusic, this);
+        
+
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_GOLDOUT_TIP, this.openGoldOutTip, this);
         EventManger.eventTarget.on(EventManger.EEventName.OUT_SUCCESS_PANEL, this.onOutSuccess, this);
         EventManger.eventTarget.on(EventManger.EEventName.PASS_LEVEL_START, this.refreshNewLevel, this);
-        EventManger.eventTarget.on(EventManger.EEventName.RESET_RESET_GAME, this.refreshNewLevelGame, this);
+        EventManger.eventTarget.on(EventManger.EEventName.RESET_RESET_GAME, this.beginGame, this);
 
         EventManger.eventTarget.on(EventManger.EEventName.IS_SHOW_MAINVIEW, this.isShowMainView, this);
     }
@@ -211,23 +225,65 @@ export class game extends Component {
         this.mainView.active = isShow;
 
         this.levelmain.active = !isShow;
+        
         if (this.levelmain.active){
-            this.refreshNewLevelGame();
+            if (gameData.saveData.hpNum <= 0){
+                this.mainView.active = true;
+                this.levelmain.active = false;
+                this.showTip(LanauageManager.getDesStrById(71));
+            }else{
+                this.beginGame();
+            }
+        }
+
+        if (this.mainView.active){
+            this.playMusic(0);
+        }
+        if (this.levelmain.active){
+            if (gameData.isChanllenge){
+                this.playMusic(2);
+            }else{
+                this.playMusic(1);
+            }
+        }
+    }
+
+    private changetMusic(){
+        if (gameData.isPlayMusic){
+            this.audioSource.clip = this.arrMusic[0];
+            this.audioSource.play();
+        }else{
+            this.audioSource.stop();
+        }
+    }
+
+    private playMusic(index:number){
+        if (gameData.isPlayMusic){
+            this.audioSource.stop();
+            this.audioSource.clip = this.arrMusic[index];
+            this.audioSource.play();
+        }else{
+            this.audioSource.stop();
+        }
+    }
+
+    private playSound(index:number){
+        if (gameData.isPlaySound){
+            this.audioSource.playOneShot(this.arrAudio[index],1)
         }
     }
 
     init(){
-        
-        this.gameType = 0 
         this.numTouchStart = -1
         this.numTouchEnd = -1
         gameData.levelSeconds = 0
         //this.layerOver.active = false
         this.nodeTip.scale = new Vec3(0,0,0)
         
-        this.isLimit = this.numLevel > 13;
+        this.isLimit = true;
         this.shuaXinLevelInfo()
         this.shuaXinDJ()
+        this.refresh();
 
         if (this.isEditing) {
             let children = this.parentBlocks.children
@@ -283,15 +339,17 @@ export class game extends Component {
             .start()
     }
 
+
     shuaXinDJ(){
-        for (let i = 0; i < this.arrLabelDJ.length; i++) {
-            this.arrLabelDJ[i].string = gameData.saveData.arrNumDJ[i]
-        }
+        // for (let i = 0; i < this.arrLabelDJ.length; i++) {
+        //     this.arrLabelDJ[i].string = gameData.saveData.arrNumDJ[i]
+        // }
+        this.arrLabelDJ[0].string = LanauageManager.getItemNumById(5).toString();
+        this.arrLabelDJ[1].string = LanauageManager.getItemNumById(6).toString();
+        this.arrLabelDJ[2].string = LanauageManager.getItemNumById(7).toString();
     }
 
     shuaXinLevelInfo(){
-
-
 
     }
 
@@ -463,7 +521,8 @@ export class game extends Component {
         }
 
         if (is_xiaoChu) {
-            this.audioSource.playOneShot(this.arrAudio[1],1)
+            //this.audioSource.playOneShot(this.arrAudio[1],1)
+            this.playSound(1);
             let children_2 = this.parentBlocksDi.children
             for (let i = 0; i < children_2.length; i++) {
                 let ts_block_2 = children_2[i].getComponent(block)
@@ -478,6 +537,7 @@ export class game extends Component {
                 }
             }
             if(!AndroidSdk.isPingbi){
+                HttpClient.getInstance().sendLevelByType(1);
                 this.xiaochuAnimation(curLevel);
             }else{
                 this.xiaochuNum++
@@ -498,8 +558,8 @@ export class game extends Component {
 
         if (children_2.length - num_xiaoChu_geShu >= 7) {
             this.gameType = -1
-            this.audioSource.playOneShot(this.arrAudio[2],1)
-
+            //this.audioSource.playOneShot(this.arrAudio[2],1)
+            this.playSound(2);
             if (this.interstitialAd) {
                 this.interstitialAd.show().catch((err) => {
                   console.error(err)
@@ -654,7 +714,8 @@ export class game extends Component {
 
             let node_UITransform = children[i].getComponent(UITransform)
             if (node_UITransform.getBoundingBox().contains(new Vec2(v3_touchStart.x,v3_touchStart.y))) {
-                this.audioSource.playOneShot(this.arrAudio[0],1)
+                //this.audioSource.playOneShot(this.arrAudio[0],1)
+                this.playSound(0);
                 this.numTouchStart = i
                 //console.log('点中了：'+i);
                 tween(children[i])
@@ -767,7 +828,11 @@ export class game extends Component {
         let children_1 = this.parentBlocks.children
         if(children_1.length == 0){
             this.gameType = 1
-            this.audioSource.playOneShot(this.arrAudio[3],1)
+            if (gameData.isChanllenge){
+                this.playSound(4);
+            }else{
+                this.playSound(3);
+            }
             
             this.numLevel++
             // this.xiaochuNum = 0;
@@ -779,7 +844,7 @@ export class game extends Component {
             
             this.scheduleOnce(function(){
                 UIManager.open(UIManager.uiNamePath.challengeSuccess)
-                gameData.saveData.curLevel++;
+                HttpClient.getInstance().sendLevelByType(2);
             },0.2)
             
         }
@@ -798,37 +863,38 @@ export class game extends Component {
 
     callBackBtn(event:Event,str:string){
         if (str == 'btn_3') {
-            if (this.useArrNumDJ[2] > 0 && this.isLimit){
-                this.showTip('该道具已达使用上限')
+            if (this.useArrNumDJ[2] > 2 && this.isLimit){
+                this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }
-            if (gameData.saveData.arrNumDJ[2] <= 0) {
+            if (LanauageManager.getItemNumById(7)  <= 0) {
                 AndroidSdk.playAdAddItem(2);
                 return
             }
             gameData.saveData.arrNumDJ[2]--
             this.useArrNumDJ[2]++
-            HttpClient.getInstance().sendUseItem(3);
+            HttpClient.getInstance().sendUseItem(7);
             this.btn3()
             this.shuaXinDJ()
         }else if (str == 'btn_shuChu') {
             this.shuChuPosBlocks()
         }else if (str == 'btn_1') {//出去3个块
-            if (this.useArrNumDJ[0] > 0 && this.isLimit){
-                this.showTip('该道具已达使用上限')
+            if (this.useArrNumDJ[0] > 2 && this.isLimit){
+                this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }
-            if (gameData.saveData.arrNumDJ[0] <= 0) {
+            if (LanauageManager.getItemNumById(5) <= 0) {
                 AndroidSdk.playAdAddItem(0);
                 return
             }
             this.btn1()
         }else if (str == 'btn_2') {//撤回
-            if (this.useArrNumDJ[1] > 0 && this.isLimit){
-                this.showTip('该道具已达使用上限')
+            if (this.useArrNumDJ[1] > 2 && this.isLimit){
+                this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }
-            if (gameData.saveData.arrNumDJ[1] <= 0) {
+
+            if (LanauageManager.getItemNumById(6) <= 0) {
                 AndroidSdk.playAdAddItem(1);
                 return
             }
@@ -849,8 +915,8 @@ export class game extends Component {
             // this.layerOver.active = false
             // this.btn1()
         }else if (str == 'btn_cw') {
-            HttpClient.getInstance().sendLevelData();
-            //this.refreshNewLevelGame();
+            //HttpClient.getInstance().sendLevelByType(0);
+            this.beginGame();
         }else if (str == 'btn_yin') {
             let children = this.parentEdit.children
             for (let i = 0; i < children.length; i++) {
@@ -943,11 +1009,11 @@ export class game extends Component {
         if (num_di_cheHui == -1) {
             // gameData.saveData.arrNumDJ[1]++
             // this.useArrNumDJ[1] = 0;
-            this.showTip('当前不可用该道具')
+            this.showTip(LanauageManager.getDesStrById(69))
         }else{
             gameData.saveData.arrNumDJ[1]--
             this.useArrNumDJ[1]++
-            HttpClient.getInstance().sendUseItem(2);
+            HttpClient.getInstance().sendUseItem(6);
             this.shuaXinDJ()
         }
 
@@ -984,11 +1050,11 @@ export class game extends Component {
         let num_geShu = arr_block_di.length
 
         if (num_geShu == 0) {
-            this.showTip('当前不可用该道具')
+            this.showTip(LanauageManager.getDesStrById(69))
         }else{
             gameData.saveData.arrNumDJ[0]--
             this.useArrNumDJ[0]++
-            HttpClient.getInstance().sendUseItem(1);
+            HttpClient.getInstance().sendUseItem(5);
             this.shuaXinDJ()
         }
 
@@ -1067,6 +1133,21 @@ export class game extends Component {
         }
     }
 
+    updateCoinTime(){
+        gameData.refreshCoinTime++;
+
+        if (gameData.refreshCoinTime > 60){
+            gameData.refreshCoinTime = 0;
+            HttpClient.getInstance().sendRefreshCoin();
+        }
+
+        if (gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) > 0){
+            gameData.saveData.coin = gameData.getInitNum(gameData.saveData.coin + gameData.saveData.addCoin) 
+        }else{
+            gameData.saveData.coin = gameData.getInitNum(gameData.saveData.coin +  (gameData.saveData.addCoin*2));
+        }
+    }
+
     changeUseTip(event:Event, str:string){
 
     }
@@ -1077,6 +1158,7 @@ export class game extends Component {
     getLevel:number; 
 
      xiaochuAnimation(curLevel:number){
+        return;
         this.xiaochuNum++;
         var isBoss = this.gameData.getIsBoss(curLevel);
         var showLevel = curLevel + 1;
@@ -1182,26 +1264,27 @@ export class game extends Component {
     }
 
     refresh(){
-        //this.getComponent(coinDropManger)?.refresh();
-        // if (this.tasktPanel.active){
-        //     this.tasktPanel.getComponent(taskPanel)?.refresh();
-        // }
-        // if (this.goldOutPanel.active){
-        //     this.goldOutPanel.getComponent(goldOutPanel)?.refresh();
-        // }
-        // if (this.wxOutPanel.active){
-        //     this.wxOutPanel.getComponent(wxOutPanel)?.refresh();
-        // }
-        this.levelmain.getComponent(levelView)?.refresh();
+        if (this.levelmain.active){
+            this.levelmain.getComponent(levelView)?.refresh();
+        }
+
+        if (this.mainView.active){
+            this.mainView.getComponent(mainView)?.refresh();
+        }
+        
         this.shuaXinDJ();
     }
 
-    refreshNewLevelGame(){
+    beginGame(){
         if (gameData.saveData.hpNum <= 0){
             this.mainView.active = true;
             this.levelmain.active = false;
             this.showTip(LanauageManager.getDesStrById(71));
         }
+        this.gameType = 0 
+        //gameData.saveData.hpNum--;
+
+        HttpClient.getInstance().sendLevelByType(0);
         this.newLevelReset();
         gameData.resetLevelData();
         this.refresh()
@@ -1211,7 +1294,7 @@ export class game extends Component {
     refreshNewLevel(){
         if(this.numLevel != gameData.saveData.curLevel){
             this.numLevel = gameData.saveData.curLevel;
-            this.refreshNewLevelGame();
+            this.beginGame();
         }else{
             this.refresh();
         }

@@ -2,6 +2,8 @@ import { _decorator, Component, Label, Node, Sprite, Toggle, Vec2, Vec3 } from '
 import { UIManager } from '../UIManager';
 import { LanauageManager } from '../LanauageManager';
 import { gameData, popupLabType } from '../gameData';
+import { HttpClient } from '../net/HttpClient';
+import { EventManger } from '../EventManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupSeting')
@@ -28,13 +30,13 @@ export class popupSeting extends Component {
     @property(Toggle)  
     musicCheck2: Toggle = null; 
 
+    @property(Label)  
+    btnLab: Label = null; 
+
     onEnable() {
         this.refresh();
     }
 
-    update(deltaTime: number) {
-        
-    }
 
     refresh(){
         this.titleLab.string = LanauageManager.getDesStrById(8);
@@ -43,6 +45,8 @@ export class popupSeting extends Component {
 
         this.musicLab.string = LanauageManager.getDesStrById(15);
 
+        this.btnLab.string = LanauageManager.getDesStrById(17);
+
         this.soundCheck.isChecked = gameData.isPlaySound;
         this.soundCheck2.isChecked != gameData.isPlaySound;
 
@@ -50,12 +54,21 @@ export class popupSeting extends Component {
         this.musicCheck2.isChecked != gameData.isPlayMusic;
     }
 
-    onChangeMusic(){
+    onChangeMusic(event:Event, str:string){
+        if (str != "isbutton"){
+            return;
+        }
         gameData.isPlayMusic = this.musicCheck.isChecked;
+        HttpClient.getInstance().sendChangePersion(0);
+        EventManger.eventTarget.emit(EventManger.EEventName.MUSIC_CHANGE_STATE);
     }
 
-    onChangeSound(){
+    onChangeSound(event:Event, str:string){
+        if (str != "isbutton"){
+            return;
+        }
         gameData.isPlaySound = this.soundCheck.isChecked;
+        HttpClient.getInstance().sendChangePersion(1);
     }
 
     onOpenVisit(){

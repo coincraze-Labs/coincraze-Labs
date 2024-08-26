@@ -4,11 +4,14 @@ import { HttpReturn } from "./ZCHttpRequest";
 import { SaveData, gameData } from "../gameData";
 import { EventManger } from "../EventManger";
 import { AndroidSdk } from "../AndroidSdk";
+import { LanauageManager } from "../LanauageManager";
+import { UIManager } from "../UIManager";
 
 export class HttpClient {
     private httpTryCount = 10;  
     private httpTryNum = 0;     
     private static instance:HttpClient = null;
+    private isInit:boolean = true;
     public static getInstance():HttpClient {
         if(this.instance == null) {
             this.instance = new HttpClient();
@@ -25,297 +28,253 @@ export class HttpClient {
         //zc.http.addHeader("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxIiwiaWF0IjoiMTcyMDUwNjc1MyIsIm5iZiI6IjE3MjA1MDY3NTMiLCJleHAiOiIxNzIwNTEzOTUzIiwiaXNzIjoidm9sLmNvcmUub3duZXIiLCJhdWQiOiJ2b2wuY29yZSIsIm9wZW5JZCI6IjU1NSIsInd4TmlrZU5hbWUiOiLmnb7mnb4xIn0.UdRs6PekPYMMkgXnTz8K1dAQtRkZQ6bDaNGW3-VJTrI");
     }
 
-    sendLogin(code:string = "555songsong"){
+    sendLogin(user_id:string = "1111111"){
         let params = {
-            "code":code
+            "user_id":user_id
         }
         if (AndroidSdk.isLocal){
-            director.loadScene("game");
             return;
         }
-        zc.http.post("api/XXL_GameInfo/WxLogin", this.onLogin.bind(this), params);
+        this.isInit = true;
+        zc.http.post("api/user", this.onLogin.bind(this), params);
     }
 
     onLogin(res:HttpReturn){
         console.log("Login------------", res.res)
         if (res.res && res.res.code == "200"){
             if (res.res.data){
-                gameData.saveData.coin = res.res.data.gameHome.money;
-                gameData.saveData.gold = res.res.data.gameHome.gold;
-                gameData.saveData.curLevel = res.res.data.gameHome.curLevel;
-                gameData.saveData.arrNumDJ = res.res.data.gameHome.arrNumDJ;
-                gameData.saveData.wxName = res.res.data.gameHome.wxNickName;
-               
-                AndroidSdk.isTempTest = res.res.data.gameHome.isOpenAcg;
-                AndroidSdk.isAd = res.res.data.gameHome.isPlayAd;
-                // AndroidSdk.isAd = false
+                let data = res.res.data;
+                if (data.user){
+                    gameData.saveData.user_id = data.user.user_id;
+                    gameData.saveData.userName = data.user.username;
+                    gameData.saveData.head = data.user.avatar;
+                }
+                if (data.task){
+                    LanauageManager.taskConfig = data.task;
+                }
+                if (data.property){
+                    LanauageManager.shopConfig = data.property;
+                }
 
-                gameData.saveData.wxId =res.res.data.gameHome.userCode;
+                if (data.gameinfo){
+                    if (data.gameinfo.level != undefined){
+                        if (!this.isInit && data.gameinfo.level > gameData.saveData.userLevel){
+                            gameData.saveData.userLevel = data.gameinfo.level;
+                            UIManager.open(UIManager.uiNamePath.levelUp)
+                        }
+                        gameData.saveData.userLevel = data.gameinfo.level;
+                    }
+                    if (data.gameinfo.live != undefined){
+                        if (!this.isInit && data.gameinfo.live > gameData.saveData.hpNum){
+                            EventManger.eventTarget.emit(EventManger.EEventName.BLINK_ANIMATION, 2);
+                        }
+                        gameData.saveData.hpNum = data.gameinfo.live;
+                    }
+                    if (data.gameinfo.exp != undefined){
+                        if (!this.isInit && data.gameinfo.exp > gameData.saveData.expNum){
+                            EventManger.eventTarget.emit(EventManger.EEventName.BLINK_ANIMATION, 3);
+                        }
+                        gameData.saveData.expNum = data.gameinfo.exp;
+                    }
+                    if (data.gameinfo.coin != undefined){
+                        if (!this.isInit && data.gameinfo.coin > gameData.saveData.coin){
+                            EventManger.eventTarget.emit(EventManger.EEventName.BLINK_ANIMATION, 1);
+                        }
+                        //gameData.refreshCoinTime = 0;
+                        gameData.saveData.coin = data.gameinfo.coin;
+                    }
+                    if (data.gameinfo.coin_up_s){
+                        gameData.saveData.addCoin = data.gameinfo.coin_up_s
+                    } 
+                    if (data.gameinfo.offline_rewards){
+                        gameData.saveData.offline_rewards = data.gameinfo.offline_rewards;
+                    }
+                    if (data.gameinfo.boost_card_expire_time != undefined){
+                        gameData.saveData.boost_card_remaining_time = data.gameinfo.boost_card_expire_time;
+                    }   
+                    if (data.gameinfo.offline_card_remaining_time != undefined){
+                        gameData.saveData.offline_card_remaining_time = data.gameinfo.offline_card_remaining_time;
+                    }  
 
-                console.log("userCode----------" + res.res.data.gameHome.userCode)
+                    if (data.gameinfo.coin_up > 0 || data.gameinfo.exp_up > 0){
+                        EventManger.eventTarget.emit(EventManger.EEventName.ADD_COINANDEXP, data.gameinfo.coin_up, data.gameinfo.exp_up);
+                    } 
 
-                var token = res.res.data.token;
-                zc.http.addHeader("Authorization",token);
+                }
+
+                if (data.game){
+                    if (data.game.checkpoint_detail){
+                        gameData.saveData.curLevel = data.game.checkpoint_detail;
+                    }
+                    if (data.game.game_time_consuming != undefined){
+                        gameData.saveData.game_time_consuming = data.game.game_time_consuming;
+                    }
+                }
+
+                if (data.backpack){
+                    gameData.saveData.backList = data.backpack;
+                }
+
+                if (data.task_done){
+                    if (data.task_done.detail_task){
+                        gameData.saveData.detail_task_isRecive = data.task_done.detail_task;
+                    }
+                    if (data.task_done.daily_task){
+                        gameData.saveData.daily_task_isRecive = data.task_done.daily_task;
+                    }
+                }
+
+                if (data.task_get){
+                    if (data.task_get.detail_task){
+                        gameData.saveData.detail_task = data.task_get.detail_task;
+                    }
+                    if (data.task_get.daily_task){
+                        gameData.saveData.daily_task = data.task_get.daily_task;
+                    }
+
+                    gameData.saveData.isChallenged = LanauageManager.getTaskIsComplete(15);
+
+                    gameData.isBindTwitter = LanauageManager.getTaskIsComplete(3);
+
+                    gameData.isBindWallet = LanauageManager.getTaskIsComplete(1);
+                }
+
+                if (data.game_detail){
+
+                    gameData.refreshCoinTime = data.game_detail.update_datetime;
+                    gameData.saveData.initNum = data.game_detail.initNum;
+                    gameData.saveData.stateNum = data.game_detail.stateNum;
+                    gameData.saveData.bossNum = data.game_detail.bossNum;
+                    gameData.saveData.challengeNum = data.game_detail.challengeNum;
+                }
+
+                if (data.personal_detail){
+                    gameData.isPlayMusic = data.personal_detail.music_on;
+                    gameData.isPlaySound = data.personal_detail.audio_on;
+                }
+                
+                //var token = res.res.data.token;
+                //zc.http.addHeader("Authorization",token);
                 //console.log("token----------" + token)
             }
+            this.isInit = false;
             director.loadScene("game")
-        }else{
-            this.showFail("" , res.res? res.res.message: res.err)
-        }
-    }
-
-    sendWxOutData(){
-        if (AndroidSdk.isLocal){
-            return;
-        }
-        zc.http.get("api/XXL_GameInfo/GetbalanceAndWxoutNumArr", this.onwxOutData.bind(this));
-    }
-
-    onwxOutData(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                gameData.saveData.coin = res.res.data.money;
-                gameData.saveData.waitMoney = res.res.data.waitMoney;
-                gameData.saveData.wxoutNum = res.res.data.wxoutNum;
-                gameData.saveData.wxoutNumArr = res.res.data.wxoutNumArr;
-
-                this.refreshView();
-            }
-        }else{
-            this.showFail("sendWxOutData " , res.res.message)
-        }
-    }
-
-    sendGoldOutData(){
-        if (AndroidSdk.isLocal){
-            return;
-        }
-        zc.http.get("api/XXL_GameInfo/GetGoldAndPlayAdNum", this.onGoldOutData.bind(this));
-    }
-
-    onGoldOutData(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                gameData.saveData.gold = res.res.data.gold;
-                this.refreshView();
-            }
-        }else{
-            this.showFail("sendGoldOutData " , res.res.message)
-        }
-    }
-
-    sendTaskData(){
-        zc.http.get("api/XXL_GameInfo/CurrentTaskMakeMoney", this.onTaskData.bind(this));
-    }
-
-    onTaskData(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                gameData.saveData.gold = res.res.data.gold;
-                gameData.saveData.singDayNum = res.res.data.curSigninNum;
-                gameData.saveData.playAdNum = res.res.data.curPlayAdNum;
-                gameData.saveData.isSingToday = res.res.data.isCurSignin;
-                gameData.saveData.taskGetArr = res.res.data.curPlayAdNumArr;
-                gameData.saveData.registerDays = res.res.data.registerDays;
-                gameData.saveData.taskAdArr = res.res.data.gearAdPlayArr;
-
-                gameData.saveData.wxId = res.res.data.userCode;
-
-
-                this.refreshView()
-            }
-        }else{
-            this.showFail("sendTaskData " , res.res.message)
-        }
-    }
-
-    sendLevelData(){
-        if (AndroidSdk.isLocal){
-            EventManger.eventTarget.emit(EventManger.EEventName.RESET_RESET_GAME);
-            return;
-        }
-        zc.http.get("api/XXL_GameInfo/GameHome", this.onLevelData.bind(this));
-    }
-
-    onLevelData(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                gameData.saveData.coin = res.res.data.money;
-                gameData.saveData.gold = res.res.data.gold;
-                gameData.saveData.curLevel = res.res.data.curLevel;
-                gameData.saveData.arrNumDJ = res.res.data.arrNumDJ;
-
-                EventManger.eventTarget.emit(EventManger.EEventName.RESET_RESET_GAME);
-            }
-        }else{
-            this.showFail("sendLevelData " , res.res.message)
-        }
-    }
-
-    sendPasLevel(addMoney:number, addGold:number, type:number){
-        let params = {
-            "type":type,
-            "Money":addMoney,
-            "Gold":addGold
-        }
-        if (AndroidSdk.isLocal){
-            if (type == 2){
-                EventManger.eventTarget.emit(EventManger.EEventName.PASS_LEVEL_START);
-            }
-            return;
-        }
-        zc.http.post("api/XXL_GameInfo/AddMoneyOrGold", this.onPasLevel.bind(this), params);
-    }
-
-    onPasLevel(res:HttpReturn){
-        if (res.res.code == "200"){
-            gameData.resetLevelData();
-
-            gameData.saveData.coin = res.res.data.money;
-            gameData.saveData.gold = res.res.data.gold;
-            gameData.saveData.curLevel = res.res.data.curLevel;
-            gameData.saveData.arrNumDJ = res.res.data.arrNumDJ;
-
-            EventManger.eventTarget.emit(EventManger.EEventName.PASS_LEVEL_START);
-        }else{
-            this.showFail("sendPasLevel " , res.res.message)
-        }
-    }
-
-    sendUseItem(PropPos:number){
-        let params = {
-            "PropPos":PropPos,
-        }
-        if (AndroidSdk.isLocal){
-            return;
-        }
-        zc.http.post("api/XXL_GameInfo/UpdateProp", this.onSendUseItem.bind(this), params);
-    }
-
-    onSendUseItem(res:HttpReturn){
-        if (res.res.code == "200"){
-            gameData.saveData.coin = res.res.data.money;
-            gameData.saveData.gold = res.res.data.gold;
-            gameData.saveData.curLevel = res.res.data.curLevel;
-            gameData.saveData.arrNumDJ = res.res.data.arrNumDJ;
-
             this.refreshView();
         }else{
-            this.showFail("sendPasLevel " , res.res.message)
+            this.showFail("" , res.res? res.res.msg: res.err)
         }
     }
-
-    sendPlayAd(index:number = 0, gear:number = 0){
+    //infoType 0 begin level,1 remove success ,2 pass level   checkpoint_type: 0 common, 1 challenge
+    sendLevelByType(type:number){
+        let levelType = gameData.isChanllenge ? 1 : 0;
         let params = {
-            "index":index,
-            "gear":gear,
+            "user_id":gameData.saveData.user_id,
+            "info_type":type,
+            "checkpoint_type":levelType
         }
-        if (AndroidSdk.isLocal){
-            return;
-        }
-        zc.http.post("api/XXL_GameInfo/AdPlayEnd", this.onsendPlayAd.bind(this), params);
+        zc.http.post("api/updateinfo", this.onLogin.bind(this), params);
     }
 
-    onsendPlayAd(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                gameData.saveData.playAdNum = res.res.data.curPlayAdNum;
-                gameData.saveData.taskAdArr = res.res.data.gearAdPlayArr;
-            }
-            this.refreshView()
-        }else{
-            this.showFail("sendLevelData " , res.res.message)
-        }
-    }
-
-    sendSignToday(){
-        zc.http.post("api/XXL_GameInfo/Signin", this.onSignToday.bind(this));
-    }
-
-    onSignToday(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                this.playAnimaTask(res.res.data.gold);
-
-                gameData.saveData.gold = res.res.data.gold;
-                gameData.saveData.singDayNum = res.res.data.curSigninNum;
-                gameData.saveData.playAdNum = res.res.data.curPlayAdNum;
-                gameData.saveData.isSingToday = res.res.data.isCurSignin;
-                gameData.saveData.taskGetArr = res.res.data.curPlayAdNumArr;
-                //gameData.saveData.registerDays = res.res.data.registerDays
-
-                this.refreshView()
-            }
-        }else{
-            this.showFail("sendTaskData " , res.res.message)
-        }
-    }
-
-    sendGetTaskReard(index:number){
+    sendReceiveOffReward(){
         let params = {
-            "index":index,
+            "user_id":gameData.saveData.user_id,
         }
-        zc.http.post("api/XXL_GameInfo/GoMakeMoney", this.onGetTaskReard.bind(this), params);
+        zc.http.post("api/offline", this.onLogin.bind(this), params);
     }
 
-    onGetTaskReard(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data){
-                this.playAnimaTask(res.res.data.gold);
-                gameData.saveData.gold = res.res.data.gold;
-                gameData.saveData.singDayNum = res.res.data.curSigninNum;
-                gameData.saveData.playAdNum = res.res.data.curPlayAdNum;
-                gameData.saveData.isSingToday = res.res.data.isCurSignin;
-                gameData.saveData.taskGetArr = res.res.data.curPlayAdNumArr;
-                //gameData.saveData.registerDays = res.res.data.registerDays
-
-                this.refreshView()
-            }
-        }else{
-            this.showFail("sendGetTaskReard " , res.res.message)
-        }
-    }
-
-    sendOutBytype(type:number){
+    sendUseItem(id:number){
         let params = {
+            "user_id":gameData.saveData.user_id,
+            "card_id":id
+        }
+        zc.http.post("api/usecard", this.onUseItem.bind(this), params);
+    }
+
+    onUseItem(res:HttpReturn){
+        this.onLogin(res);
+        if (res.res && res.res.code == "200"){
+            this.showFail("", LanauageManager.getDesStrById(127));
+        }else{
+            this.showFail("" , res.res? res.res.msg: res.err)
+        }
+    }
+
+    sendBuyShopItem(id:number, num:number = 1){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "proprety_id":id,
+            "pay_num":num,
+        }
+        zc.http.post("api/shoppay", this.onBuyShopItem.bind(this), params);
+    }
+
+    onBuyShopItem(res:HttpReturn){
+        this.onLogin(res);
+        if (res.res && res.res.code == "200"){
+            this.showFail("", LanauageManager.getDesStrById(108));
+        }else{
+            this.showFail("" , res.res? res.res.msg: res.err)
+        }
+    }
+
+    sendRefreshCoin(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/detail", this.onLogin.bind(this), params);
+    }
+
+    sendReceiveTaskReward(taskId:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "task_id":taskId,
+        }
+        zc.http.post("api/task", this.onLogin.bind(this), params);
+    }
+
+    sendGetTaskData(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/tasklist", this.onLogin.bind(this), params);
+    }
+
+    sendGetRankData(type:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
             "type":type
         }
-        zc.http.post("api/XXL_GameInfo/Withdrawal", this.onOutBytype.bind(this), params);
-        
+        zc.http.post("api/ranking", this.onRankData.bind(this), params);
     }
 
-    onOutBytype(res:HttpReturn){
-        if (res.res.code == "200"){
-            if (res.res.data.withdrawalAmount != undefined){
-                EventManger.eventTarget.emit(EventManger.EEventName.OUT_SUCCESS_PANEL, res.res.data.withdrawalAmount);
+    onRankData(res:HttpReturn){
+        if (res.res && res.res.code == "200"){
+            if (res.res.self_rank){
+                gameData.saveData.selfRank = res.res.self_rank;
             }
-            if (res.res.data.money != undefined){
-                gameData.saveData.coin = res.res.data.money;
-                gameData.saveData.waitMoney = res.res.data.waitMoney;
-                gameData.saveData.wxoutNum = res.res.data.wxoutNum;
-                gameData.saveData.wxoutNumArr = res.res.data.wxoutNumArr;
-            }else if(res.res.data.gold != undefined){
-                gameData.saveData.gold = res.res.data.gold;
+            if (res.res.all_rank){
+                gameData.saveData.rankList = res.res.all_rank;
             }
-
             this.refreshView();
-            
         }else{
-            this.showFail("sendOutBytype " , res.res.message)
+            this.showFail("api/ranking " , res.res.msg)
         }
     }
 
-    playAnimaTask(gold:number){
-        var addGold = Math.max(0, gold - gameData.saveData.gold);
-        EventManger.eventTarget.emit(EventManger.EEventName.PLAY_ANIMATION_TASK, addGold);
+    sendChangePersion(type:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "detail_type":type
+        }
+        zc.http.post("api/changepersonaldetail", this.onLogin.bind(this), params);
     }
 
     refreshView(){
         EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME);
     }
 
-    showFail(str:string,  message:string) {
-        EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, (str + message))
+    showFail(str:string,  msg:string) {
+        EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, (str + msg))
     }
 
 }

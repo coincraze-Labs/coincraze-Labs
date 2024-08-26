@@ -14,6 +14,10 @@ export class blinkAnima extends Component {
 
     target:UIOpacity;
 
+    animation: Tween<UIOpacity>;
+
+    animationForever: Tween<UIOpacity>; 
+
     onEnable(): void {
         this.target = this.node.getComponent(UIOpacity);
         if (!this.target){
@@ -27,28 +31,28 @@ export class blinkAnima extends Component {
     }
 
     private startBlink() {  
-
         if (this.type == 1){
-            tween(this.target)  
+            this.animationForever = tween(this.target)  
             .to(this.duration, { opacity: 100 }, {easing: easing.quadOut})  
             .to(this.duration, { opacity: 255 }, {easing: easing.quadOut})  
             .union() 
             .repeatForever() 
-            .start(); 
         }else{
-            tween(this.node)  
-            .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
-            .to(this.duration, { scale: new Vec3(0.9,0.9, 1) }, {easing: easing.quadOut})  
-            .union() 
-            .repeatForever() 
-            .start();  
+            // this.animationForever = tween(this.node)  
+            // .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
+            // .to(this.duration, { scale: new Vec3(0.9,0.9, 1) }, {easing: easing.quadOut})  
+            // .union() 
+            // .repeatForever();
         }
-         
+
+        this.animationForever.start();
+
     } 
 
     public startBlinkOne(callBack:Function = null) {  
+
         if (this.type == 1){
-            tween(this.target)  
+            this.animation = tween(this.target)  
             .to(this.duration, { opacity: 100 })  
             .to(this.duration, { opacity: 255 })  
             .to(this.duration, { opacity: 100 })  
@@ -58,25 +62,28 @@ export class blinkAnima extends Component {
                     callBack();
                 }
             })
-            .start(); 
         }else{
-            tween(this.node)  
-            .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
-            .to(this.duration, { scale: new Vec3(0.9,0.9, 1) }, {easing: easing.quadOut})  
-            .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
-            .to(this.duration, { scale: new Vec3(1,1, 1) }, {easing: easing.quadOut})  
-            .call(()=>{
-                if (callBack){
-                    callBack();
-                }
-            })
-            .start(); 
+            // this.animation = tween(this.node)  
+            // .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
+            // .to(this.duration, { scale: new Vec3(0.9,0.9, 1) }, {easing: easing.quadOut})  
+            // .to(this.duration, { scale: new Vec3(1.1,1.1, 1) }, {easing: easing.quadOut})  
+            // .to(this.duration, { scale: new Vec3(1,1, 1) }, {easing: easing.quadOut})  
+            // .call(()=>{
+            //     if (callBack){
+            //         callBack();
+            //     }
+            // })
         }
+        this.animation.start();
     }
 
     protected onDisable(): void {
-        Tween.stopAllByTarget(this.target);
-        Tween.stopAllByTarget(this.node);
+        if (this.animation) {  
+            this.animation.stop();   
+        }  
+        if (this.animationForever) {  
+            this.animationForever.stop();   
+        }  
     }
 }
 

@@ -3,6 +3,7 @@ import { UIManager } from '../UIManager';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { EventManger } from '../EventManger';
+import { HttpClient } from '../net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupUseBtn')
@@ -42,7 +43,8 @@ export class popupUseBtn extends Component {
     }
 
     onYesClick(){
-        
+        HttpClient.getInstance().sendUseItem( this.itemData.id);
+        this.onCloseClick();
     }
 }
 

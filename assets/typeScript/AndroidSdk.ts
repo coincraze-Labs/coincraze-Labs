@@ -3,11 +3,12 @@ import { gameData } from './gameData';
 import { HTML5, JSB, NATIVE } from 'cc/env';
 import { HttpClient } from './net/HttpClient';
 import { EventManger } from './EventManger';
+import { LanauageManager } from './LanauageManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AndroidSdk')
 export class AndroidSdk  {
-    public static isLocal = true;
+    public static isLocal = false;
 
     public static isAndroid =  NATIVE
 
@@ -44,11 +45,12 @@ export class AndroidSdk  {
     }
 
     public static playAdAddItem(index:number){
-        this.playAd(null, -1, index);
+        EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(84));
+        //this.playAd(null, -1, index);
     }
 
     public static outToWx(type:number){
-        HttpClient.getInstance().sendOutBytype(type);
+        //HttpClient.getInstance().sendOutBytype(type);
     }
 
 
@@ -66,6 +68,7 @@ export class AndroidSdk  {
     }
  
     public static wxLoginResult(usrName:string, errCode:string) {
+        return;
         if (usrName == "login"){
             console.log("wxLoginResultcode=" + errCode)
             HttpClient.getInstance().sendLogin(errCode)
@@ -82,7 +85,7 @@ export class AndroidSdk  {
                 gameData.saveData.taskAdArr[this.gear - 1]++;
             }
             EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME);
-            HttpClient.getInstance().sendPlayAd(this.index + 1, this.gear);
+            //HttpClient.getInstance().sendPlayAd(this.index + 1, this.gear);
             if(this.callBack){
                 this.callBack();   
             }

@@ -30,9 +30,9 @@ export class item extends Component {
         this.itemData = data;
         LanauageManager.loadImage("image/shopItem/" + this.itemData.icon, this.iconSp);
 
-        this.nameLab.string = LanauageManager.getDesStrById(this.itemData.nameId);
+        this.nameLab.string = LanauageManager.getDesStrById(this.itemData.name_id);
 
-        this.numLab.string = num.toString();
+        this.numLab.string = Math.floor(num).toString();
     }
 
 

@@ -28,7 +28,7 @@ export class HttpReturn {
 
 export class HttpRequest {
 
-    defaultUrl: string = "http://111.229.126.145:8098/" //"http://111.229.126.145:8098/"; // "http://192.168.9.78:8098/"//
+    defaultUrl: string =  "http://122.114.74.62:9009/"; //"http://192.168.9.114:8008/" // "http://111.229.126.145:8098/" //"http://111.229.126.145:8098/"; // "http://192.168.9.78:8098/"//
 
     h5defaultUrl:string =  "http://localhost:9991/"
 
@@ -125,6 +125,9 @@ export class HttpRequest {
      * @memberof HttpRequest
      */
     private sendRequest(name:string, params:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
+        if (AndroidSdk.isLocal){
+            return;
+        }
         if (name == null || name == '') {
             return ;
         }
@@ -152,7 +155,7 @@ export class HttpRequest {
         } else {
             newUrl = url;
         }
-
+        console.log("RequestUrl:" + newUrl);
         if (urls[newUrl] != null && reqparams[newUrl] == paramsStr) {
             warn(`地址[${url}]已正在请求中，不能重复请求`);
             return ;

@@ -849,7 +849,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -2.095,
+      "x": 14.872,
       "y": -149.663,
       "z": 0
     },
@@ -2298,7 +2298,7 @@
     "component": "",
     "_componentId": "2c9a5ZBqGVPh7CgqZ7evb7j",
     "handler": "onChangeSound",
-    "customEventData": ""
+    "customEventData": "isbutton"
   },
   {
     "__type__": "cc.UITransform",
@@ -3382,7 +3382,7 @@
     "component": "",
     "_componentId": "2c9a5ZBqGVPh7CgqZ7evb7j",
     "handler": "onChangeMusic",
-    "customEventData": ""
+    "customEventData": "isbutton"
   },
   {
     "__type__": "cc.UITransform",
@@ -3540,6 +3540,9 @@
     },
     "musicCheck2": {
       "__id__": 143
+    },
+    "btnLab": {
+      "__id__": 39
     },
     "_id": ""
   },

@@ -1,6 +1,6 @@
 import { _decorator, Component, Label, Node, Sprite, Vec2, Vec3 } from 'cc';
 import { UIManager } from '../UIManager';
-import { LanauageManager } from '../LanauageManager';
+import { LanauageManager, ShopItemData } from '../LanauageManager';
 import { gameData, popupLabType } from '../gameData';
 const { ccclass, property } = _decorator;
 
@@ -65,6 +65,11 @@ export class popupLabel extends Component {
         else if (LanauageManager.popupLabelType == popupLabType.boostCardPopup){
             this.titId = 25
             this.desId = 26;
+        }
+        else if (LanauageManager.popupLabelType == popupLabType.itemPopup){
+            let itemData:ShopItemData = LanauageManager.getShopItemData(gameData.popupTipItemId);
+            this.titId = itemData.name_id;
+            this.desId = itemData.des_id;
         }
 
         this.titleLab.string = LanauageManager.getDesStrById(this.titId);

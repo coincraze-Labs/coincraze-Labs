@@ -21,6 +21,7 @@ export class coinDrop extends Component {
 
 
     drop(from:Node, targert:Node, callback:Function){
+        return;
         let count = this.coinCount;
         let finshCount = 0;
 

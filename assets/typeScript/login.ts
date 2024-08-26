@@ -3,6 +3,7 @@ import { AndroidSdk } from './AndroidSdk';
 import { HttpClient } from './net/HttpClient';
 import { gameData, SaveData } from './gameData';
 import { EventManger } from './EventManger';
+import { TgManager } from './TgManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('login')
@@ -39,22 +40,22 @@ export class login extends Component {
 
     start() {
         gameData.saveData = new SaveData();
-        director.preloadScene("game");
+        // director.preloadScene("game");
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_TIP, this.showTip, this);
 
         //var checked = localStorage.getItem("game_isChecded");
-        this.isCheck.isChecked = false; //checked == "true";
-        if (AndroidSdk.isTempTest){
-            this.seTip.active = true;
+        // this.isCheck.isChecked = false; //checked == "true";
+        // if (AndroidSdk.isTempTest){
+        //     this.seTip.active = true;
            
-        }else{
-            this.isCheck.node.active = false;
-            this.isCheck.isChecked = true;
-            this.rich2.node.active = false;
-            if (AndroidSdk.isAndroid){
-                native.bridge.sendToNative("userAgree", "defaultAdUrl");
-            }
-        }
+        // }else{
+        //     this.isCheck.node.active = false;
+        //     this.isCheck.isChecked = true;
+        //     this.rich2.node.active = false;
+        //     if (AndroidSdk.isAndroid){
+        //         native.bridge.sendToNative("userAgree", "defaultAdUrl");
+        //     }
+        // }
         this.loadPross.progress = 0
         this.loginRequest();
     }
@@ -115,7 +116,8 @@ export class login extends Component {
 
     loginRequest(){
         //请求登录
-        AndroidSdk.wxLogin();
+        //AndroidSdk.wxLogin();
+        TgManager.processURLParameters();
 
         tween(this.loadPross)
         .to(4,{progress:1}, { easing: 'quadIn' })
@@ -124,7 +126,8 @@ export class login extends Component {
         .to(0.1,{progress:0})
         .to(2,{progress:1})
         .start();
-
+        
+        director.preloadScene("game");
         //director.loadScene("game")
     }
 

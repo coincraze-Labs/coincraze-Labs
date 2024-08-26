@@ -65,7 +65,7 @@ export class coinDropManger extends Component {
             pfb = this.goldPfb
             target = this.target2;
         }
-        gameData.setGold()
+        //gameData.setGold()
         if (pfb && target){
             var prefab = instantiate(pfb);
             prefab.parent = this.node;

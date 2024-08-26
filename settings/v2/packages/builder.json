@@ -1,6 +1,14 @@
 {
   "splash-setting": {
-    "url": "project://assets/img/imaglog.png",
-    "displayWatermark": false
+    "url": "project://assets/imgNew/loading/加载背景.png",
+    "displayWatermark": false,
+    "displayRatio": 1,
+    "totalTime": 0,
+    "clearColor": {
+      "x": 0.0392156862745098,
+      "y": 0,
+      "z": 0,
+      "w": 1
+    }
   }
 }
