@@ -1,6 +1,6 @@
 # YangTG
 
-cocoscreator-羊了羊修改，7.16电报游戏
+cocoscreator Match-3 game
 
 ## Getting started
 
