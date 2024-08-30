@@ -62,12 +62,18 @@ export class rankItem extends Component {
         }
 
         this.desLab.string = LanauageManager.getDesStrById(this.rankDes[this.rankType-1]) + ":";
-        //this.iconSp.node.setPosition(this.desLab.node.position.x + this.desLab.node.getComponent(UITransform).contentSize.width,  this.iconSp.node.position.y);
+
+        this.scheduleOnce(this.onPositon, 0.2);  
+        
         this.iconSp.spriteFrame = this.iconArr[this.rankType-1];
         this.numLab.string = gameData.getInitNum(this.rangeData.num).toString();
         if (this.rankType == 3){
             this.numLab.string = gameData.getLeftTime(this.rangeData.num);
         }
+    }
+
+    onPositon(){
+        this.iconSp.node.setPosition(this.desLab.node.position.x + this.desLab.node.getComponent(UITransform).contentSize.width + 50,  this.iconSp.node.position.y);
     }
 
     onReceiveClick(){

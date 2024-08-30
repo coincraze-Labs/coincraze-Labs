@@ -1,4 +1,4 @@
-import { _decorator, Component, director, game, Label, loader, native, Node, ProgressBar, RichText, sys, System, Toggle, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, assetManager, Component, director, game, Label, loader, native, Node, ProgressBar, resources, RichText, sys, System, Toggle, tween, UITransform, Vec3 } from 'cc';
 import { AndroidSdk } from './AndroidSdk';
 import { HttpClient } from './net/HttpClient';
 import { gameData, SaveData } from './gameData';
@@ -37,6 +37,8 @@ export class login extends Component {
     loadLab:Label
 
     isneed:boolean = true;
+
+    static instance;
 
     start() {
         gameData.saveData = new SaveData();
@@ -115,21 +117,27 @@ export class login extends Component {
     }
 
     loginRequest(){
-        //请求登录
         //AndroidSdk.wxLogin();
         TgManager.processURLParameters();
 
         tween(this.loadPross)
-        .to(4,{progress:1}, { easing: 'quadIn' })
-        .to(0.1,{progress:0})
-        .to(3,{progress:1})
-        .to(0.1,{progress:0})
-        .to(2,{progress:1})
+        .to(20,{progress:0.9}, { easing: 'quadIn' })
         .start();
         
-        director.preloadScene("game");
-        //director.loadScene("game")
+        login.instance = this;
+        director.preloadScene("game", this.onComplete);
     }
+      
+    onComplete() {  
+        tween( login.instance.loadPross).stop();
+        tween( login.instance.loadPross)
+        .to(0.2,{progress:1}, { easing: 'quadIn' })
+        .call(()=>{
+            director.loadScene("game")  
+        })
+        .to(10,{progress:1}, { easing: 'quadIn' })
+        .start();
+    } 
 
     update(deltaTime: number) {
         
@@ -139,7 +147,7 @@ export class login extends Component {
         this.nodeTip.getChildByName('Label').getComponent(Label).string = str
         tween(this.nodeTip)
             .to(0.1,{scale:new Vec3(1,1,1)})
-            .delay(1.5)
+            .delay(3)
             .to(0.1,{scale:new Vec3(0,0,0)})
             .start()
     }

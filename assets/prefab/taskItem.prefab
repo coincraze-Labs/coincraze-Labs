@@ -584,8 +584,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 50.05,
-      "height": 50.4
+      "width": 175,
+      "height": 57
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -626,8 +626,8 @@
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 0,
-    "_enableWrapText": true,
+    "_overflow": 2,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -701,7 +701,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "6569badc-7225-4296-9e14-1f80e18378ca@f9941",
+      "__uuid__": "3e8c994f-0379-472f-a02b-092459b7a60d@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 1,
@@ -739,7 +739,7 @@
         "__id__": 33
       }
     ],
-    "_interactable": false,
+    "_interactable": true,
     "_transition": 3,
     "_normalColor": {
       "__type__": "cc.Color",
@@ -770,7 +770,7 @@
       "a": 255
     },
     "_normalSprite": {
-      "__uuid__": "6569badc-7225-4296-9e14-1f80e18378ca@f9941",
+      "__uuid__": "3e8c994f-0379-472f-a02b-092459b7a60d@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_hoverSprite": null,
@@ -820,7 +820,7 @@
         "__id__": 36
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 42
@@ -1160,7 +1160,7 @@
         "__id__": 51
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 57

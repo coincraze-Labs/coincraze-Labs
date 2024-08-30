@@ -259,7 +259,7 @@ export enum popupCommonType{
     exit = 1,      
     disConnectTwitter = 2,   
     disConnectWalletr = 3,  
-    offLineCoin = 3,    
+    offLineCoin = 4,    
 }
 
 export enum coinType{

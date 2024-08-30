@@ -162,11 +162,11 @@ export class game extends Component {
         if (AndroidSdk.isLocal){
             gameData.saveData = new SaveData();
         }
+        UIManager.preloadPrefabs();
     }
 
     start() {
-
-        if (gameData.saveData.offline_rewards > 0){
+        if (gameData.saveData.offline_rewards > 10){
             LanauageManager.popupCommonlType = popupCommonType.offLineCoin
             UIManager.open(UIManager.uiNamePath.popupCommonBtn);
         }
@@ -238,6 +238,7 @@ export class game extends Component {
 
         if (this.mainView.active){
             this.playMusic(0);
+            this.mainView.getComponent(mainView)?.refresh();
         }
         if (this.levelmain.active){
             if (gameData.isChanllenge){
@@ -1141,7 +1142,7 @@ export class game extends Component {
             HttpClient.getInstance().sendRefreshCoin();
         }
 
-        if (gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) > 0){
+        if (gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) <= 0){
             gameData.saveData.coin = gameData.getInitNum(gameData.saveData.coin + gameData.saveData.addCoin) 
         }else{
             gameData.saveData.coin = gameData.getInitNum(gameData.saveData.coin +  (gameData.saveData.addCoin*2));

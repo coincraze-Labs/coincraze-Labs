@@ -615,7 +615,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -55.179,
+      "x": -93.455,
       "y": 3.926,
       "z": 0
     },
@@ -690,7 +690,7 @@
       "a": 255
     },
     "_string": "BOST Card",
-    "_horizontalAlign": 0,
+    "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 20,
     "_fontSize": 20,

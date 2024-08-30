@@ -28,9 +28,12 @@ export class HttpClient {
         //zc.http.addHeader("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxIiwiaWF0IjoiMTcyMDUwNjc1MyIsIm5iZiI6IjE3MjA1MDY3NTMiLCJleHAiOiIxNzIwNTEzOTUzIiwiaXNzIjoidm9sLmNvcmUub3duZXIiLCJhdWQiOiJ2b2wuY29yZSIsIm9wZW5JZCI6IjU1NSIsInd4TmlrZU5hbWUiOiLmnb7mnb4xIn0.UdRs6PekPYMMkgXnTz8K1dAQtRkZQ6bDaNGW3-VJTrI");
     }
 
-    sendLogin(user_id:string = "1111111"){
+    sendLogin(user_id:number = 1111111, first_name:string = "11", last_name:string = "22", shared_id:string = null){
         let params = {
-            "user_id":user_id
+            "user_id":user_id,
+            "first_name":first_name,
+            "last_name":last_name, 
+            "shared_id":shared_id
         }
         if (AndroidSdk.isLocal){
             return;
@@ -100,6 +103,14 @@ export class HttpClient {
                         EventManger.eventTarget.emit(EventManger.EEventName.ADD_COINANDEXP, data.gameinfo.coin_up, data.gameinfo.exp_up);
                     } 
 
+                    if (data.gameinfo.share_id != undefined){
+                        gameData.saveData.inivitId = data.gameinfo.share_id;
+                    }
+
+                    if (data.gameinfo.checkpoint_detail != undefined){
+                        gameData.saveData.curLevel = data.gameinfo.checkpoint_detail;
+                    }
+
                 }
 
                 if (data.game){
@@ -157,8 +168,10 @@ export class HttpClient {
                 //zc.http.addHeader("Authorization",token);
                 //console.log("token----------" + token)
             }
+            if (this.isInit){
+                //director.loadScene("game")
+            }
             this.isInit = false;
-            director.loadScene("game")
             this.refreshView();
         }else{
             this.showFail("" , res.res? res.res.msg: res.err)
@@ -267,6 +280,36 @@ export class HttpClient {
             "detail_type":type
         }
         zc.http.post("api/changepersonaldetail", this.onLogin.bind(this), params);
+    }
+
+    sendDailyshare(){
+
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/dailyshare", this.onLogin.bind(this), params);
+    }
+
+    sendDailyinvite(){
+
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/dailyinvite", this.onLogin.bind(this), params);
+    }
+
+    sendDailyrepost(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/dailyrepost", this.onLogin.bind(this), params);
+    }
+
+    sendVisitwebsite(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/visitwebsite", this.onLogin.bind(this), params);
     }
 
     refreshView(){

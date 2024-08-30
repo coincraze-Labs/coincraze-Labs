@@ -26,7 +26,7 @@ export class taskVIew extends Component {
     private is_daily:boolean = false;
 
     onEnable() {
-        this.is_daily = true;
+        //this.is_daily = true;
         HttpClient.getInstance().sendGetTaskData();
         this.refresh();
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
@@ -74,6 +74,10 @@ export class taskVIew extends Component {
             item.getComponent('taskItem')?.refresh(itemData);
             
         }
+    }
+
+    onGoCompleteTask(){
+        
     }
 
     onDailyClick(){

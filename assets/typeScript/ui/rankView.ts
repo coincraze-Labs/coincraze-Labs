@@ -39,7 +39,7 @@ export class rankView extends Component {
     private rankType:number = 1;
 
     onEnable() {
-        this.rankType = 1;
+        //this.rankType = 1;
 
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
         HttpClient.getInstance().sendGetRankData(this.rankType);
@@ -63,7 +63,7 @@ export class rankView extends Component {
 
         this.btn3Lab.string = LanauageManager.getDesStrById(30);
 
-        let str = Math.floor((800 - gameData.saveData.selfRank.rank) / 800 * 100) + "%"
+        let str = Math.floor((1200 - gameData.saveData.selfRank.rank) / 1200 * 100) + "%"
         this.tipLab.string = LanauageManager.getDesStrById(82).replace("&1", str);
 
         this.info = gameData.saveData.rankList;

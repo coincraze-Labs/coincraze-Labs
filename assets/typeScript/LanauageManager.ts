@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 @ccclass('LanauageManager')
 export class LanauageManager {
 
-    public static languageType:number = 2;
+    public static languageType:number = 1;
 
     public static popupLabelType:number = 1;
 

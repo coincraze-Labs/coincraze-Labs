@@ -28,7 +28,7 @@ export class HttpReturn {
 
 export class HttpRequest {
 
-    defaultUrl: string =  "http://122.114.74.62:9009/"; //"http://192.168.9.114:8008/" // "http://111.229.126.145:8098/" //"http://111.229.126.145:8098/"; // "http://192.168.9.78:8098/"//
+    defaultUrl: string =  "https://api.coincraze.ai/"; //"http://122.114.74.62:9009/"; //"http://192.168.9.114:8008/" // "http://111.229.126.145:8098/" //"http://111.229.126.145:8098/"; // "http://192.168.9.78:8098/"//
 
     h5defaultUrl:string =  "http://localhost:9991/"
 

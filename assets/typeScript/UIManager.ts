@@ -25,6 +25,12 @@ export class UIManager {
         CLOSE_UI: 'CLOSE_UI',
     };
 
+    public static preloadPrefabs() {  
+         resources.preloadDir("ui", ()=>{
+            console.log("preload success")
+         })
+    }  
+
     private static instances = {};
 
     private static assets = {};

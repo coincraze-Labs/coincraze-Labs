@@ -47,7 +47,7 @@ export class popupCommon extends Component {
 
         this.desLab.string = LanauageManager.getDesStrById(this.desId);
 
-        if (this.desId = 128){
+        if (this.desId == 128){
             this.desLab.string = LanauageManager.getDesStrById(this.desId).replace("&1", gameData.saveData.offline_rewards.toString());
         }
     }

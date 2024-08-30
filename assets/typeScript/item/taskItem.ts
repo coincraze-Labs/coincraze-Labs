@@ -1,9 +1,10 @@
-import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
+import { _decorator, Button, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
 import { LanauageManager, ShopItemData, taskItemData } from '../LanauageManager';
 import { gameData } from '../gameData';
 import { UIManager } from '../UIManager';
 import { EventManger } from '../EventManger';
 import { HttpClient } from '../net/HttpClient';
+import { TgManager } from '../TgManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('taskItem')
@@ -39,6 +40,8 @@ export class taskItem extends Component {
     @property(Prefab)  
     itemPfb: Node = null; 
 
+    private isCanGo:number[] = [1,2,3,4,6,7,10,11,12,13,14,16];
+
     private taskData:taskItemData
 
     refresh(data:taskItemData){
@@ -56,6 +59,8 @@ export class taskItem extends Component {
         this.btn3.active = state == 3;
         if (state == 1){
             this.btn1Lab.string = LanauageManager.getDesStrById(data.btn_id>0?data.btn_id:86);
+            this.btn1.getComponent(Button).interactable = data.btn_id > 0;
+            this.btn1.getComponent(Sprite).grayscale = data.btn_id <= 0;
         }else if (state == 2){
             this.btn2Lab.string = LanauageManager.getDesStrById(44);
         }
@@ -95,7 +100,36 @@ export class taskItem extends Component {
     }
 
     onCompleteClick(){
-
+        switch (this.taskData.id) {
+            case 1:
+                TgManager.connectWallet();
+                break;
+            case 2:
+                TgManager.addTelegramChannel();
+                break;
+            case 3:
+                TgManager.connectTwitter();
+                break;
+            case 4:
+                TgManager.followTwitter();
+                break;
+            case 6:
+                TgManager.visitWebsite();
+                break;
+            case 11:
+            case 12:
+            case 13:
+                TgManager.invite();
+                break;
+            case 14:
+                TgManager.shareTelegram();
+                break;
+            case 16:
+                TgManager.repostTwitter();
+                break;
+            default:
+                break;
+        }
     }
 }
 
