@@ -83,6 +83,7 @@ export class levelView extends Component {
     }
 
     onBtnClick(event: Event, str:string){
+        LanauageManager.playSound();
         if (str == "backBtn"){
             LanauageManager.popupCommonlType = popupCommonType.exit;
             UIManager.open(UIManager.uiNamePath.popupCommonBtn);

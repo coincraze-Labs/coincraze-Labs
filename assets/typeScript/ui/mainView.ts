@@ -38,6 +38,9 @@ export class mainView extends Component {
     userNameLab: Label = null;
 
     @property(Label)  
+    userIdLab: Label = null;
+
+    @property(Label)  
     userTwitterLab: Label = null;
 
     @property(Label)  
@@ -75,16 +78,15 @@ export class mainView extends Component {
 
     protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.BLINK_ANIMATION, this.blikAnima, this);
-
     }
 
     onEnable() {
         this.refresh();
-
+        gameData.replaceHead(this.head, gameData.saveData.head);
     }
 
     update(deltaTime: number) {
-        if (!gameData.saveData.isChallenged){
+        if (true){
             if (this.diffSeconds <= 0){
                 this.diffSeconds = gameData.getZeroTime();
             }
@@ -114,6 +116,7 @@ export class mainView extends Component {
     }
 
     onBtnClick(event: Event, str:string){
+        LanauageManager.playSound();
         if (str == "task"){
             UIManager.open(UIManager.uiNamePath.taskView);
         }
@@ -136,6 +139,10 @@ export class mainView extends Component {
             UIManager.open(UIManager.uiNamePath.popupSeting);
         }
         else if (str == "challenge"){
+            if (gameData.saveData.isChallenged){
+                EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(131));
+                return;
+            }
             gameData.isChanllenge = true;
             EventManger.eventTarget.emit(EventManger.EEventName.IS_SHOW_MAINVIEW, false);
         }
@@ -184,11 +191,16 @@ export class mainView extends Component {
             gameData.popupTipItemId = 1;
             UIManager.open(UIManager.uiNamePath.popupLabel);
         }
+        else if (str == "expPopup"){
+            LanauageManager.popupLabelType = popupLabType.exp
+            UIManager.open(UIManager.uiNamePath.popupLabel);
+        }
+        else if (str == "copyUserId"){
+            LanauageManager.copyText(gameData.saveData.user_id.toString());
+        }
     }
 
     public refresh(){
-
-        gameData.replaceHead(this.head, gameData.saveData.head);
 
         this.levelPross.progress = gameData.saveData.expNum / gameData.getExpSum();
 
@@ -206,9 +218,11 @@ export class mainView extends Component {
             }
         }
 
-        this.chall.active = !gameData.saveData.isChallenged;
+        //this.chall.active = !gameData.saveData.isChallenged;
 
         this.userNameLab.string = gameData.saveData.userName;
+
+        this.userIdLab.string = gameData.saveData.user_id.toString();
 
         this.userTwitterLab.string = LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
 

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, instantiate, input, Input, EventTouch, UITransform, Vec3 , Vec2, Color, Sprite, tween, Label, AudioSource, AudioClip, sys, NodePool, random, randomRange, randomRangeInt, Size, EditBox, native} from 'cc';
+import { _decorator, Component, Node, Prefab, instantiate, input, Input, EventTouch, UITransform, Vec3 , Vec2, Color, Sprite, tween, Label, AudioSource, AudioClip, sys, NodePool, random, randomRange, randomRangeInt, Size, EditBox, native, Button, Animation} from 'cc';
 import { block } from './block';
 import { gameData, getPanelType, moneyType, popupCommonType, SaveData } from './gameData';
 import { WECHAT } from 'cc/env';
@@ -10,6 +10,7 @@ import { levelView } from './ui/levelView';
 import { UIManager } from './UIManager';
 import { LanauageManager } from './LanauageManager';
 import { mainView } from './ui/mainView';
+import { tonConnect } from './tonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('game')
@@ -117,6 +118,12 @@ export class game extends Component {
     @property({type:Node})
     mainView = null
 
+    @property({type:Node})
+    loading:Node = null
+
+    @property({type:Animation})
+    passAni:Animation = null;
+
     numTouchStart: number;
     numTouchEnd: number;
     gameData: gameData;
@@ -162,7 +169,8 @@ export class game extends Component {
         if (AndroidSdk.isLocal){
             gameData.saveData = new SaveData();
         }
-        UIManager.preloadPrefabs();
+        this.loading.active = false;
+        //UIManager.preloadPrefabs();
     }
 
     start() {
@@ -210,7 +218,10 @@ export class game extends Component {
 
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_TIP, this.showTip, this);
+        EventManger.eventTarget.on(EventManger.EEventName.PLAY_SOUND_INDEX, this.playSound, this);
         EventManger.eventTarget.on(EventManger.EEventName.MUSIC_CHANGE_STATE, this.changetMusic, this);
+        EventManger.eventTarget.on(EventManger.EEventName.USE_ITEM_SURE, this.useItemSureSuccess, this);
+        EventManger.eventTarget.on(EventManger.EEventName.LOADING_IS_SHOW, this.isLoadingShow, this);
         
 
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_GOLDOUT_TIP, this.openGoldOutTip, this);
@@ -219,6 +230,12 @@ export class game extends Component {
         EventManger.eventTarget.on(EventManger.EEventName.RESET_RESET_GAME, this.beginGame, this);
 
         EventManger.eventTarget.on(EventManger.EEventName.IS_SHOW_MAINVIEW, this.isShowMainView, this);
+
+        this.passAni.on(Animation.EventType.FINISHED, this.passAniFinish, this);
+    }
+
+    private isLoadingShow(isShow:boolean){
+        this.loading.active = false;
     }
 
     private isShowMainView(isShow:boolean){
@@ -251,6 +268,7 @@ export class game extends Component {
 
     private changetMusic(){
         if (gameData.isPlayMusic){
+            this.audioSource.stop();
             this.audioSource.clip = this.arrMusic[0];
             this.audioSource.play();
         }else{
@@ -259,6 +277,7 @@ export class game extends Component {
     }
 
     private playMusic(index:number){
+        this.audioSource.volume = index == 0?1:0.6;
         if (gameData.isPlayMusic){
             this.audioSource.stop();
             this.audioSource.clip = this.arrMusic[index];
@@ -268,7 +287,7 @@ export class game extends Component {
         }
     }
 
-    private playSound(index:number){
+    public playSound(index:number){
         if (gameData.isPlaySound){
             this.audioSource.playOneShot(this.arrAudio[index],1)
         }
@@ -304,7 +323,7 @@ export class game extends Component {
         this.parentBlocksDi.removeAllChildren()
 
         this.pddj()
-        this.btn3()
+        this.btn3(false)
     }
 
     createBlocksEdit(){
@@ -843,13 +862,22 @@ export class game extends Component {
                 })
             }
             
+            if (gameData.isChanllenge){
+                this.passAni.play("overAni")
+            }else{
+                this.passAni.play("pass")
+            }
+            
             this.scheduleOnce(function(){
                 UIManager.open(UIManager.uiNamePath.challengeSuccess)
                 HttpClient.getInstance().sendLevelByType(2);
             },0.2)
-            
         }
+    }
 
+    passAniFinish(){
+        // UIManager.open(UIManager.uiNamePath.challengeSuccess)
+        // HttpClient.getInstance().sendLevelByType(2);
     }
 
     pdBlockDiMoving(){
@@ -862,6 +890,22 @@ export class game extends Component {
         return is_moving
     }
 
+    useItemSure(id:number){
+        let itemData = LanauageManager.getShopItemData(id);
+        gameData.curBuyShopData = itemData;
+        UIManager.open(UIManager.uiNamePath.popupUseBtn);
+    }
+
+    useItemSureSuccess(id:number){
+        if (id == 7){
+            this.btn3();
+        }else if (id == 5){
+            this.btn1()
+        }else if (id == 6){
+            this.btn2()
+        }
+    }
+
     callBackBtn(event:Event,str:string){
         if (str == 'btn_3') {
             if (this.useArrNumDJ[2] > 2 && this.isLimit){
@@ -869,14 +913,12 @@ export class game extends Component {
                 return;
             }
             if (LanauageManager.getItemNumById(7)  <= 0) {
-                AndroidSdk.playAdAddItem(2);
+                AndroidSdk.playAdAddItem(7);
                 return
             }
-            gameData.saveData.arrNumDJ[2]--
-            this.useArrNumDJ[2]++
-            HttpClient.getInstance().sendUseItem(7);
-            this.btn3()
-            this.shuaXinDJ()
+            this.useItemSure(7)
+            // this.btn3(true)
+            // this.shuaXinDJ()
         }else if (str == 'btn_shuChu') {
             this.shuChuPosBlocks()
         }else if (str == 'btn_1') {//出去3个块
@@ -885,10 +927,14 @@ export class game extends Component {
                 return;
             }
             if (LanauageManager.getItemNumById(5) <= 0) {
-                AndroidSdk.playAdAddItem(0);
+                AndroidSdk.playAdAddItem(5);
                 return
             }
-            this.btn1()
+            if (this.isBtn1()){
+                this.useItemSure(5)
+            }else{
+                this.btn1()
+            }
         }else if (str == 'btn_2') {//撤回
             if (this.useArrNumDJ[1] > 2 && this.isLimit){
                 this.showTip(LanauageManager.getDesStrById(83))
@@ -896,10 +942,14 @@ export class game extends Component {
             }
 
             if (LanauageManager.getItemNumById(6) <= 0) {
-                AndroidSdk.playAdAddItem(1);
+                AndroidSdk.playAdAddItem(6);
                 return
             }
-            this.btn2()
+            if (this.isBtn2()){
+                this.useItemSure(6)
+            }else{
+                this.btn2()
+            }
         }else if (str == 'btn_fh') {
             // if (gameData.saveData.arrNumDJ[3] <= 0) {
             //     if (this.isWX) {
@@ -965,7 +1015,6 @@ export class game extends Component {
         }
     }
 
-    //撤回
     btn2(){
         let children = this.parentBlocksDi.children
         let i_end = -1
@@ -1037,7 +1086,28 @@ export class game extends Component {
        
     }
 
-    //出去3个块
+    isBtn2():boolean{
+        let children = this.parentBlocksDi.children
+        let i_end = -1
+        for (let i = children.length - 1; i >= 0; i--) {
+            let ts_block = children[i].getComponent(block)
+            if (ts_block.isXiaoChu) {
+                continue
+            }
+            i_end = i
+            break
+        }
+
+        let num_di_cheHui = -1
+
+        if (i_end != -1) {
+            let ts_block = children[i_end].getComponent(block)
+            num_di_cheHui = ts_block.numDi
+        }
+        let isCanuse = num_di_cheHui == -1?false:true;
+        return isCanuse;
+    }
+
     btn1(){
         let arr_block_di = []
         let children_di_1 = this.parentBlocksDi.children
@@ -1072,9 +1142,9 @@ export class game extends Component {
                 .to(0.1,{position:v3_block_di})
                 .call(()=>{
                     let node_block = null;
-                    if (this.blockPool.size() > 0) { // 通过 size 接口判断对象池中是否有空闲的对象
+                    if (this.blockPool.size() > 0) { 
                         node_block = this.blockPool.get();
-                    } else { // 如果没有空闲对象，也就是对象池中备用对象不够时，我们就用 cc.instantiate 重新创建
+                    } else { 
                         node_block = instantiate(this.preBlock);
                     }
                     node_block.parent = this.parentBlocks
@@ -1106,8 +1176,28 @@ export class game extends Component {
 
     }
 
+    isBtn1():boolean{
+        let arr_block_di = []
+        let children_di_1 = this.parentBlocksDi.children
+        for (let i = 0; i < children_di_1.length; i++) {
+            let ts_block = children_di_1[i].getComponent(block)
+            if (ts_block.numDi < 3 && ts_block.isXiaoChu == false) {
+                arr_block_di.push(children_di_1[i])
+            }
+        }
+
+        let num_geShu = arr_block_di.length
+        let iscanUse = num_geShu == 0?false:true;
+        return iscanUse;
+    }
+
     //洗牌功能
-    btn3(){
+    btn3(isUseItem:boolean = true){
+        if (isUseItem){
+            gameData.saveData.arrNumDJ[2]--
+            this.useArrNumDJ[2]++
+            HttpClient.getInstance().sendUseItem(7);
+        }
         this.shuaXinDJ()
         let children = this.parentBlocks.children
         for (let i = 0; i < children.length; i++) {

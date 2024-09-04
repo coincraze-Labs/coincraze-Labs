@@ -334,7 +334,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 200.469,
+      "x": 157.882,
       "y": -43.254,
       "z": 0
     },
@@ -705,7 +705,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100.11,
+      "width": 175.17,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -735,12 +735,12 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 19,
-      "g": 175,
-      "b": 236,
+      "r": 227,
+      "g": 239,
+      "b": 243,
       "a": 255
     },
-    "_string": "100000",
+    "_string": "9,999,999.99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,

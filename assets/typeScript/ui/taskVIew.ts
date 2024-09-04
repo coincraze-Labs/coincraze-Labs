@@ -23,7 +23,7 @@ export class taskVIew extends Component {
 
     private info:any[];
 
-    private is_daily:boolean = false;
+    private is_daily:boolean = true;
 
     onEnable() {
         //this.is_daily = true;

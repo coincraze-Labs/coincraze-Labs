@@ -1,9 +1,10 @@
 import { _decorator, Component, native, Node, System } from 'cc';
-import { gameData } from './gameData';
+import { gameData, popupCommonType } from './gameData';
 import { HTML5, JSB, NATIVE } from 'cc/env';
 import { HttpClient } from './net/HttpClient';
 import { EventManger } from './EventManger';
 import { LanauageManager } from './LanauageManager';
+import { UIManager } from './UIManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('AndroidSdk')
@@ -45,7 +46,9 @@ export class AndroidSdk  {
     }
 
     public static playAdAddItem(index:number){
-        EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(84));
+        LanauageManager.popupCommonlType = popupCommonType.buy;
+        UIManager.open(UIManager.uiNamePath.popupCommonBtn);
+        //EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(84));
         //this.playAd(null, -1, index);
     }
 
@@ -71,7 +74,7 @@ export class AndroidSdk  {
         return;
         if (usrName == "login"){
             console.log("wxLoginResultcode=" + errCode)
-            HttpClient.getInstance().sendLogin(errCode)
+            HttpClient.getInstance().sendLogin()
         }
         
         else if (usrName == "playAd"){

@@ -81,11 +81,13 @@ export class shopItem extends Component {
     }
 
     onAddBtnClick(){
+        LanauageManager.playSound();
         this.buyNum++;
         this.refreshShop();
     }
 
     onSubBtnClick(){
+        LanauageManager.playSound();
         this.buyNum--;
         if (this.buyNum <= 0){
             this.buyNum = 1;
@@ -94,6 +96,7 @@ export class shopItem extends Component {
     }
 
     onBuyClick(){
+        LanauageManager.playSound();
         if (this.isBackPack){
             if (this.itemData.can_use && LanauageManager.getItemNumById(this.itemData.id) > 0){
                 if (this.itemData.id == 1 && gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time) > 0){

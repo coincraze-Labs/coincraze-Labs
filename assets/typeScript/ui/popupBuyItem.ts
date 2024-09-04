@@ -3,6 +3,7 @@ import { UIManager } from '../UIManager';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { EventManger } from '../EventManger';
+import { HttpClient } from '../net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupBuyItem')
@@ -36,7 +37,12 @@ export class popupBuyItem extends Component {
 
     private buyNum:number = 0;
 
+    protected start(): void {
+        EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
+    }
+
     onEnable() {
+        HttpClient.getInstance().sendTonPrice();
         this.refresh()
     }
 
@@ -53,13 +59,15 @@ export class popupBuyItem extends Component {
 
         this.btn3_lab1.string = LanauageManager.getDesStrById(gameData.isBindWallet ? 63: 62 )
 
-        this.btn1_lab1.string = coin + LanauageManager.getDesStrById(105);
-        this.btn1_lab2.string = coin + LanauageManager.getDesStrById(105);
-        this.btn1_lab3.string = "10%" + LanauageManager.getDesStrById(107);
+        this.btn1_lab1.string = LanauageManager.getCoinNumString(coin*0.9*gameData.saveData.tonPrice) + " " + LanauageManager.getDesStrById(105);
+        this.btn1_lab2.string = LanauageManager.getCoinNumString(coin)  + LanauageManager.getDesStrById(105);
+        //this.btn1_lab3.string = "10%" + LanauageManager.getDesStrById(107);
 
-        this.btn2_lab1.string = coin +  LanauageManager.getDesStrById(106);
-        this.btn2_lab2.string = coin +  LanauageManager.getDesStrById(106);
-        this.btn2_lab3.string = "10%" + LanauageManager.getDesStrById(107);
+        this.btn2_lab1.string = LanauageManager.getCoinNumString(coin*0.9) + " " +  LanauageManager.getDesStrById(106);
+        this.btn2_lab2.string = LanauageManager.getCoinNumString(coin)  +  LanauageManager.getDesStrById(106);
+        //this.btn2_lab3.string = "10%" + LanauageManager.getDesStrById(107);
+
+        this.btn3_lab1.string = LanauageManager.getCoinNumString(coin*71) + " " +  LanauageManager.getDesStrById(106);
     }
 
     onCloseClick(){
@@ -67,15 +75,15 @@ export class popupBuyItem extends Component {
     }
 
     onBtn1Click(){
-
+        LanauageManager.playSound();
     }
 
     onBtn2Click(){
-        
+        LanauageManager.playSound();
     }
 
     onBtn3Click(){
-        
+        LanauageManager.playSound();
     }
 
 }

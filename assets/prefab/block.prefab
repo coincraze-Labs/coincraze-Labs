@@ -3,13 +3,13 @@
     "__type__": "cc.Prefab",
     "_name": "block",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_native": "",
     "data": {
       "__id__": 1
     },
     "optimizationPolicy": 0,
-    "persistent": false,
-    "asyncLoadAssets": false
+    "persistent": false
   },
   {
     "__type__": "cc.Node",
@@ -59,6 +59,7 @@
       "y": 1,
       "z": 1
     },
+    "_mobility": 0,
     "_layer": 33554432,
     "_euler": {
       "__type__": "cc.Vec3",
@@ -72,6 +73,7 @@
     "__type__": "cc.Node",
     "_name": "yuanSu",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_parent": {
       "__id__": 1
     },
@@ -107,6 +109,7 @@
       "y": 0.7,
       "z": 1
     },
+    "_mobility": 0,
     "_layer": 33554432,
     "_euler": {
       "__type__": "cc.Vec3",
@@ -120,6 +123,7 @@
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 2
     },
@@ -147,6 +151,7 @@
     "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 2
     },
@@ -195,12 +200,16 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "be2okla/FOLICAd6wvFv3S"
+    "fileId": "be2okla/FOLICAd6wvFv3S",
+    "instance": null,
+    "targetOverrides": null,
+    "nestedPrefabInstanceRoots": null
   },
   {
     "__type__": "cc.Node",
     "_name": "yinYing",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "_parent": {
       "__id__": 1
     },
@@ -236,6 +245,7 @@
       "y": 1,
       "z": 1
     },
+    "_mobility": 0,
     "_layer": 33554432,
     "_euler": {
       "__type__": "cc.Vec3",
@@ -249,6 +259,7 @@
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 8
     },
@@ -276,6 +287,7 @@
     "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 8
     },
@@ -324,12 +336,16 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "89XwyhMNFK37kWr2FJ93gD"
+    "fileId": "89XwyhMNFK37kWr2FJ93gD",
+    "instance": null,
+    "targetOverrides": null,
+    "nestedPrefabInstanceRoots": null
   },
   {
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 1
     },
@@ -357,6 +373,7 @@
     "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 1
     },
@@ -398,6 +415,7 @@
     "__type__": "6cb43f0XAtE34BQ3z1S3Fgm",
     "_name": "",
     "_objFlags": 0,
+    "__editorExtras__": {},
     "node": {
       "__id__": 1
     },
@@ -531,46 +549,6 @@
       {
         "__uuid__": "721163d6-c235-4f67-b5d7-48062d5a4eb8@f9941",
         "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "23e538f1-4a59-44b9-a29a-9e857999d004@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "b7d0d3e9-766c-47f6-ab5a-7c2eb8b42ebb@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "310c12e8-0c67-4ddc-ae76-b9ee25a7073d@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "71dfb3a6-bc67-4288-9198-c4a68c7954b8@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "7db10644-e1e3-4d90-bc3b-b03bab2a9dba@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "3a60fc7f-3056-4f98-90a1-b12b45c8b0f9@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "137deb78-eb34-4537-a1b6-1eea95f78fba@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "9c386e77-4a07-4675-a4dc-439f892f600b@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "ed4459d5-bfc3-4cc0-91b3-766a5dd821d7@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "ec8900d5-9eb5-4473-8e98-0bc6d818c29f@f9941",
-        "__expectedType__": "cc.SpriteFrame"
       }
     ],
     "_id": ""
@@ -587,6 +565,8 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "420C8NsZBPSpIDuMUtzgwS"
+    "fileId": "420C8NsZBPSpIDuMUtzgwS",
+    "instance": null,
+    "targetOverrides": null
   }
 ]

@@ -104,7 +104,7 @@ export class HttpClient {
                     } 
 
                     if (data.gameinfo.share_id != undefined){
-                        gameData.saveData.inivitId = data.gameinfo.share_id;
+                        gameData.saveData.invitId = data.gameinfo.share_id;
                     }
 
                     if (data.gameinfo.checkpoint_detail != undefined){
@@ -163,14 +163,18 @@ export class HttpClient {
                     gameData.isPlayMusic = data.personal_detail.music_on;
                     gameData.isPlaySound = data.personal_detail.audio_on;
                 }
+
+                if (data.invite_num != undefined){
+                    gameData.saveData.inviteNum = data.invite_num;
+                }
                 
                 //var token = res.res.data.token;
                 //zc.http.addHeader("Authorization",token);
                 //console.log("token----------" + token)
             }
-            if (this.isInit){
-                //director.loadScene("game")
-            }
+            // if (this.isInit){
+            //     director.loadScene("game")
+            // }
             this.isInit = false;
             this.refreshView();
         }else{
@@ -310,6 +314,35 @@ export class HttpClient {
             "user_id":gameData.saveData.user_id,
         }
         zc.http.post("api/visitwebsite", this.onLogin.bind(this), params);
+    }
+
+    sendTonPrice(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/tounsdt", this.onsendTonPrice.bind(this), params);
+    }
+
+    onsendTonPrice(res:HttpReturn){
+        if (res.res){
+            gameData.saveData.tonPrice = res.res.price;
+            this.refreshView();
+        }
+    }
+
+    sendTwiteer(type:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "x_type":type,
+        }
+        zc.http.post("api/xback", this.onLogin.bind(this), params);
+    }
+
+    sendJoinCommunity(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/joincommunity", this.onLogin.bind(this), params);
     }
 
     refreshView(){

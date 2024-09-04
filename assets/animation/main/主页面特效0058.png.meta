@@ -1,5 +1,5 @@
 {
-  "ver": "1.0.25",
+  "ver": "1.0.27",
   "importer": "image",
   "imported": true,
   "uuid": "012bd905-186e-488a-9e93-be5a9a00ec1b",
@@ -117,7 +117,7 @@
         "imageUuidOrDatabaseUri": "012bd905-186e-488a-9e93-be5a9a00ec1b@6c48a",
         "atlasUuid": ""
       },
-      "ver": "1.0.11",
+      "ver": "1.0.12",
       "imported": true,
       "files": [
         ".json"
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "fixAlphaTransparencyArtifacts": true,
     "hasAlpha": true,
-    "redirect": "012bd905-186e-488a-9e93-be5a9a00ec1b@f9941"
+    "redirect": "012bd905-186e-488a-9e93-be5a9a00ec1b@6c48a"
   }
 }

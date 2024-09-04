@@ -63,7 +63,10 @@ export class rankView extends Component {
 
         this.btn3Lab.string = LanauageManager.getDesStrById(30);
 
-        let str = Math.floor((1200 - gameData.saveData.selfRank.rank) / 1200 * 100) + "%"
+        let str = Math.floor((800 - gameData.saveData.selfRank.rank) / 800 * 100) + "%"
+        if (str == "NaN%" || gameData.saveData.selfRank.rank > 800){
+            str = "0%"
+        }
         this.tipLab.string = LanauageManager.getDesStrById(82).replace("&1", str);
 
         this.info = gameData.saveData.rankList;

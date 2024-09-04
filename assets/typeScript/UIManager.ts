@@ -1,4 +1,6 @@
 import { _decorator, Asset, Component, director, instantiate, Node, Prefab, resources } from 'cc';
+import { LanauageManager } from './LanauageManager';
+import { EventManger } from './EventManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('UIManager')
@@ -26,9 +28,9 @@ export class UIManager {
     };
 
     public static preloadPrefabs() {  
-         resources.preloadDir("ui", ()=>{
-            console.log("preload success")
-         })
+        //  resources.preloadDir("ui", ()=>{
+        //     console.log("preload success")
+        //  })
     }  
 
     private static instances = {};
@@ -36,8 +38,9 @@ export class UIManager {
     private static assets = {};
 
     public static async open(uiName: string, callback?: Function) {
+        LanauageManager.playSound();
         if (!uiName || uiName === '') {return;}
-
+        EventManger.eventTarget.emit(EventManger.EEventName.LOADING_IS_SHOW, true);
         const uiPath = uiName;
         const arr = uiName.split('/');
         uiName = arr[arr.length - 1];
@@ -49,6 +52,7 @@ export class UIManager {
                 node.active = true;
                 UIManager.reshow(node, uiName);
                 callback && callback(undefined, node);
+                EventManger.eventTarget.emit(EventManger.EEventName.LOADING_IS_SHOW, false);
                 return node;
             }
 
@@ -59,6 +63,7 @@ export class UIManager {
             node.active = true;
             UIManager.instances[uiName] = node;
             callback && callback(undefined, node);
+            EventManger.eventTarget.emit(EventManger.EEventName.LOADING_IS_SHOW, false);
             return node;
         } catch (error) {
             callback ? callback(error) : console.error(error);
@@ -66,8 +71,8 @@ export class UIManager {
     }
 
     public static close(uiName: string | Node, isDestroy: boolean = false) {
+        LanauageManager.playSound();
         let node: Node;
-
         if (typeof uiName === 'string') {
             const arr = uiName.split('/');
             uiName = arr[arr.length - 1];
@@ -78,7 +83,7 @@ export class UIManager {
         }
 
         if (!node) {return null;}
-
+        
         node.active = !1;
         node.parent = null;
         if (isDestroy) {

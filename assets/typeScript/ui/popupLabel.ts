@@ -41,7 +41,7 @@ export class popupLabel extends Component {
         this.bg.active = LanauageManager.popupLabelType != popupLabType.hookPopup;
 
         this.bg2.active = LanauageManager.popupLabelType == popupLabType.hookPopup;
-
+        this.titId = 66;
         if (LanauageManager.popupLabelType == popupLabType.hookPopup){
             this.titId = 64;
             this.desId = 14;
@@ -70,11 +70,17 @@ export class popupLabel extends Component {
             let itemData:ShopItemData = LanauageManager.getShopItemData(gameData.popupTipItemId);
             this.titId = itemData.name_id;
             this.desId = itemData.des_id;
+        }else if (LanauageManager.popupLabelType == popupLabType.exp){
+            this.desId = 129;
         }
 
         this.titleLab.string = LanauageManager.getDesStrById(this.titId);
 
-        this.desLab.string = LanauageManager.getDesStrById(this.desId);
+        if (this.desId == 129){
+            this.desLab.string = LanauageManager.getDesStrById(this.desId).replace("&1", gameData.saveData.userLevel.toString());
+        }else{
+            this.desLab.string = LanauageManager.getDesStrById(this.desId);
+        }
 
         if (this.des2Id > 0){
             //this.des2Lab.string = LanauageManager.getDesStrById(this.des2Id);

@@ -23,6 +23,7 @@ export class levelUp extends Component {
     }
 
     onBackClick(){
+        LanauageManager.playSound();
         UIManager.close(this.node);
     }
 }

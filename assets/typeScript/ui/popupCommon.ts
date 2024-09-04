@@ -42,6 +42,12 @@ export class popupCommon extends Component {
         else if (LanauageManager.popupCommonlType == popupCommonType.offLineCoin){
             this.desId = 128;
         }
+        else if (LanauageManager.popupCommonlType == popupCommonType.buy){
+            this.desId = 130;
+        }
+        else if (LanauageManager.popupCommonlType == popupCommonType.connectTwitter){
+            this.desId = 132;
+        }
 
         this.titleLab.string = LanauageManager.getDesStrById(this.titleId);
 
@@ -68,6 +74,13 @@ export class popupCommon extends Component {
         }
         else if (LanauageManager.popupCommonlType == popupCommonType.offLineCoin){
             HttpClient.getInstance().sendReceiveOffReward();
+        }
+        else if (LanauageManager.popupCommonlType == popupCommonType.buy){
+            gameData.isBackNotShop = false;
+            UIManager.open(UIManager.uiNamePath.shopView);
+        }
+        else if (LanauageManager.popupCommonlType == popupCommonType.connectTwitter){
+            TgManager.connectTwitter();
         }
 
         UIManager.close(this.node);

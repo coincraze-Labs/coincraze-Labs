@@ -17,7 +17,6 @@ export class popupUseBtn extends Component {
 
     private itemData:ShopItemData;
 
-    private buyNum:number = 0;
 
     onEnable() {
         this.refresh()
@@ -29,7 +28,6 @@ export class popupUseBtn extends Component {
 
     refresh(){
         this.itemData = gameData.curBuyShopData;
-        this.buyNum = gameData.curBuyCount;
         if (!this.itemData){
             return;
         }
@@ -43,7 +41,11 @@ export class popupUseBtn extends Component {
     }
 
     onYesClick(){
-        HttpClient.getInstance().sendUseItem( this.itemData.id);
+        if (this.itemData.id == 5 || this.itemData.id == 6 || this.itemData.id == 7){
+            EventManger.eventTarget.emit(EventManger.EEventName.USE_ITEM_SURE, this.itemData.id)
+        }else{
+            HttpClient.getInstance().sendUseItem(this.itemData.id);
+        }
         this.onCloseClick();
     }
 }

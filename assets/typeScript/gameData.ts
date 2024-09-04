@@ -83,14 +83,18 @@ export class gameData extends Component {
 
     public static getZeroTime():number{
         let now = new Date();  
+        
+        let utcNow = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());  
+        let utcEndOfDay = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 24, 0, 0, 0); 
+        
+        // let noonToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 24, 0, 0);  
    
-        let noonToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 24, 0, 0);  
-   
-        if (now > noonToday) {  
-            noonToday.setDate(noonToday.getDate() + 1);  
-        }  
-  
-        let diff = noonToday.getTime() - now.getTime();  
+        // if (now > noonToday) {  
+        //     noonToday.setDate(noonToday.getDate() + 1);  
+        // }  
+        let hour = utcEndOfDay.getTime()
+        let hour2 = utcNow.getTime()
+        let diff = utcEndOfDay.getTime() - utcNow.getTime();  
   
         let seconds = Math.ceil(diff / 1000); 
         
@@ -127,24 +131,24 @@ export class gameData extends Component {
         let m1 = (day < 10) ? '0' + day.toString() : day.toString();  
         let s1 = (year < 10) ? '0' + year.toString() : year.toString();   
         
-        return `${h1}:${m1}:${s1}`;;
+        return `${h1}:${m1}:${s1}`;
     }
 
     public static replaceHead(sp:Sprite, remoteUrl:string){
         if (remoteUrl == undefined || remoteUrl == null){
             return;
         }
-        // assetManager.loadRemote<ImageAsset>(remoteUrl, function (err, imageAsset) {
-        //     if (err){
-        //         console.log("加载失败" + err);
-        //         return;
-        //     }
-        //     const spriteFrame = new SpriteFrame();
-        //     const texture = new Texture2D();
-        //     texture.image = imageAsset;
-        //     spriteFrame.texture = texture;
-        //     sp.spriteFrame = spriteFrame;
-        // });
+        assetManager.loadRemote<ImageAsset>(remoteUrl, function (err, imageAsset) {
+            if (err){
+                console.log("加载失败" + err);
+                return;
+            }
+            const spriteFrame = new SpriteFrame();
+            const texture = new Texture2D();
+            texture.image = imageAsset;
+            spriteFrame.texture = texture;
+            sp.spriteFrame = spriteFrame;
+        });
     }
 
     
@@ -180,12 +184,11 @@ export class gameData extends Component {
 
         var isBoss = this.getIsBoss(level);
         if (gameData.isChanllenge){
-            itemNum += gameData.saveData.challengeNum*3;//90
+            itemNum = gameData.saveData.challengeNum*3;//90
         }
         else if (isBoss){
             itemNum += gameData.saveData.bossNum*3;//30
         }
-       
         return itemNum;
     }
 
@@ -198,13 +201,13 @@ export class gameData extends Component {
         var isBoss = this.getIsBoss(level);
         
         if (gameData.isChanllenge){
-            typeNum += 15;
+            typeNum = gameData.numBlockSum;
         }
         else if (isBoss){
             typeNum += 5;
         }
 
-        return Math.max(typeNum, gameData.numBlockSum);
+        return Math.min(typeNum, gameData.numBlockSum);
     }
 
 
@@ -253,13 +256,16 @@ export enum popupLabType{
     offlineCardPopup = 4, 
     boostCardPopup = 5,  
     itemPopup = 6, 
+    exp = 7, 
 }
 
 export enum popupCommonType{
     exit = 1,      
     disConnectTwitter = 2,   
     disConnectWalletr = 3,  
-    offLineCoin = 4,    
+    offLineCoin = 4, 
+    buy = 5,   
+    connectTwitter = 6,
 }
 
 export enum coinType{
@@ -306,7 +312,7 @@ export class SaveData  {
     taskAdArr:number[] = [0,0,0];
 
     //-------------------------user-----------------------------------
-    user_id:number;
+    user_id:number = 0;
 
     userName:string;
 
@@ -359,7 +365,9 @@ export class SaveData  {
 
     selfRank:randItemData;
 
-    inivitId:string = "456SFGR1545SFGRA";
+    invitId:string = "456SFGR1545SFGRA";
+
+    inviteNum:number = 0;
 
     //------------------------------------------------------------
 
@@ -370,4 +378,6 @@ export class SaveData  {
     bossNum:number = 10;
 
     challengeNum:number = 30;
+
+    tonPrice:number = 0;
 }

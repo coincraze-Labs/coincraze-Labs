@@ -4,6 +4,7 @@ import { HttpClient } from './net/HttpClient';
 import { gameData, SaveData } from './gameData';
 import { EventManger } from './EventManger';
 import { TgManager } from './TgManager';
+import { UIManager } from './UIManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('login')
@@ -121,21 +122,31 @@ export class login extends Component {
         TgManager.processURLParameters();
 
         tween(this.loadPross)
-        .to(20,{progress:0.9}, { easing: 'quadIn' })
+        .to(8,{progress:1}, { easing: 'quadIn' })
+        .to(0.1,{progress:0}, { easing: 'quadIn' })
+        .to(8,{progress:1}, { easing: 'quadIn' })
+        .to(0.1,{progress:0}, { easing: 'quadIn' })
+        .to(20,{progress:1}, { easing: 'quadIn' })
+        .to(0.1,{progress:0}, { easing: 'quadIn' })
+        .to(20,{progress:0.98}, { easing: 'quadIn' })
         .start();
         
         login.instance = this;
-        director.preloadScene("game", this.onComplete);
+        //director.loadScene("game")  
+        resources.preloadDir("ui", ()=>{
+            console.log("preload success")
+            director.loadScene("game")
+         })
     }
       
     onComplete() {  
         tween( login.instance.loadPross).stop();
         tween( login.instance.loadPross)
-        .to(0.2,{progress:1}, { easing: 'quadIn' })
+        .to(0.2,{progress:1})
         .call(()=>{
             director.loadScene("game")  
         })
-        .to(10,{progress:1}, { easing: 'quadIn' })
+        .to(10,{progress:1})
         .start();
     } 
 

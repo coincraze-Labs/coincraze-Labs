@@ -25,13 +25,14 @@ export class topCom extends Component {
 
     protected onEnable(): void {
         this.refresh();
-    }
 
-    refresh(){
         if (this.head.node.active){
             gameData.replaceHead(this.head,gameData.saveData.head);
         }
+    }
 
+    refresh(){
+        
         if (this.levelPross.node.active){
             this.levelPross.progress = gameData.saveData.expNum / gameData.getExpSum();
         }

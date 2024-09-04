@@ -4,6 +4,7 @@ import { LanauageManager } from '../LanauageManager';
 import { gameData, popupLabType } from '../gameData';
 import { HttpClient } from '../net/HttpClient';
 import { EventManger } from '../EventManger';
+import { TgManager } from '../TgManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupSeting')
@@ -47,32 +48,37 @@ export class popupSeting extends Component {
 
         this.btnLab.string = LanauageManager.getDesStrById(17);
 
-        this.soundCheck.isChecked = gameData.isPlaySound;
-        this.soundCheck2.isChecked != gameData.isPlaySound;
+        this.soundCheck.node.active = gameData.isPlaySound;
+        this.soundCheck2.node.active = !gameData.isPlaySound;
 
-        this.musicCheck.isChecked = gameData.isPlayMusic;
-        this.musicCheck2.isChecked != gameData.isPlayMusic;
+        this.musicCheck.node.active = gameData.isPlayMusic;
+        this.musicCheck2.node.active = !gameData.isPlayMusic;
     }
 
     onChangeMusic(event:Event, str:string){
         if (str != "isbutton"){
             return;
         }
-        gameData.isPlayMusic = this.musicCheck.isChecked;
+        LanauageManager.playSound();
+        gameData.isPlayMusic = !gameData.isPlayMusic;
         HttpClient.getInstance().sendChangePersion(0);
         EventManger.eventTarget.emit(EventManger.EEventName.MUSIC_CHANGE_STATE);
+
+        this.refresh();
     }
 
     onChangeSound(event:Event, str:string){
         if (str != "isbutton"){
             return;
         }
-        gameData.isPlaySound = this.soundCheck.isChecked;
+        LanauageManager.playSound();
+        gameData.isPlaySound = !gameData.isPlaySound;
         HttpClient.getInstance().sendChangePersion(1);
+        this.refresh();
     }
 
     onOpenVisit(){
-        
+        TgManager.visitWebsite();
     }
 
     onCloseClick(){

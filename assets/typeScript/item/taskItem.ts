@@ -40,6 +40,9 @@ export class taskItem extends Component {
     @property(Prefab)  
     itemPfb: Node = null; 
 
+    @property(Label)  
+    prossLab: Label = null;
+
     private isCanGo:number[] = [1,2,3,4,6,7,10,11,12,13,14,16];
 
     private taskData:taskItemData
@@ -52,7 +55,14 @@ export class taskItem extends Component {
 
         this.desLab.string = LanauageManager.getDesStrById( this.taskData.des_id).replace("&1", this.taskData.task_num.toString());
 
+        if (data.id == 11 ||data.id == 12 ||data.id == 13){
+            this.prossLab.string = gameData.saveData.inviteNum + "/" + this.taskData.task_num;
+        }else{
+            this.prossLab.string = "";
+        }
+
         let state = LanauageManager.getTaskState(this.taskData.id);
+
 
         this.btn1.active = state == 1;
         this.btn2.active = state == 2;
@@ -96,10 +106,12 @@ export class taskItem extends Component {
     }
 
     onReceiveClick(){
+        LanauageManager.playSound();
         HttpClient.getInstance().sendReceiveTaskReward(this.taskData.id);
     }
 
     onCompleteClick(){
+        LanauageManager.playSound();
         switch (this.taskData.id) {
             case 1:
                 TgManager.connectWallet();
@@ -116,6 +128,14 @@ export class taskItem extends Component {
             case 6:
                 TgManager.visitWebsite();
                 break;
+            case 7:
+                TgManager.addVip();
+                break;
+            case 10:
+            case 5:
+                gameData.isBackNotShop = false;
+                UIManager.open(UIManager.uiNamePath.shopView);
+                break;
             case 11:
             case 12:
             case 13:
@@ -130,6 +150,9 @@ export class taskItem extends Component {
             default:
                 break;
         }
+        this.scheduleOnce(()=>{
+            HttpClient.getInstance().sendGetTaskData();
+        }, 1)
     }
 }
 

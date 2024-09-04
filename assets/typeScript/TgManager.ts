@@ -1,9 +1,18 @@
 import { _decorator, Component, EventTarget, Node, resources, Sprite, SpriteFrame } from 'cc';
-import { coinType, gameData } from './gameData';
+import { coinType, gameData, popupCommonType } from './gameData';
 import { HttpClient } from './net/HttpClient';
 import { EventManger } from './EventManger';
 import { LanauageManager } from './LanauageManager';
+import { UIManager } from './UIManager';
+// import { TonTransferRequest } from '../plugin/package/dist/common/game-fi';
+// import { GameFi } from '../plugin/package/dist/cocos/src';
+// import { Address, toNano, TonConnectUI } from '../plugin/package/dist';
 const { ccclass, property } = _decorator;
+
+export interface TonAddressConfig {
+    tonAddress: string,
+    jettonAddress?: string;
+}
 
 @ccclass('TgManager')
 export class TgManager {
@@ -16,36 +25,70 @@ export class TgManager {
 
     public static wibsiteUrl = "https://www.coincraze.ai/";
 
-    public static followTwitterUrl = "https://x.com/coincraze_labs";
+    public static teVipUrl = "https://t.me/premium"
+
+    public static followTwitterUrl = "https://x.com/intent/follow?screen_name=coincraze_labs";
+
+    public static connectTwitterUrl = "https://twitter.com/i/oauth2/authorize?client_id=MTYxV093bkVDb0ZsN3ZOWlBlUkI6MTpjaQ&code_challenge=J4iC-7aBZccUpaVPpt0yWGjPvOxr-XtxYGOu15RvNjY&code_challenge_method=S256&redirect_uri=https%3A%2F%2Fapi.coincraze.ai%2Fapi%2Fcallback&response_type=code&scope=users.read+tweet.read&state=K2V7mvaEoFvaZHi1LD0l2VHVr75alt40Y2xqa5DBZBA___C1_7291599119___1"
+
+    // private static _gameFi: GameFi;
+    // private static _tonAddressConfig: TonAddressConfig;
 
     public static connectTwitter(){
+        LanauageManager.playSound();
 
+        window.open(TgManager.connectTwitterUrl);
+
+        HttpClient.getInstance().sendTwiteer(1);
     }
 
     public static disConnectTwitter(){
-        
+        LanauageManager.playSound();
+
+        HttpClient.getInstance().sendTwiteer(5);
     }
 
     public static followTwitter(){
+        if (!gameData.isBindTwitter){
+            LanauageManager.popupCommonlType = popupCommonType.connectTwitter;
+            UIManager.open(UIManager.uiNamePath.popupCommonBtn);
+            return;
+        }
+        LanauageManager.playSound();
         let url = TgManager.followTwitterUrl;
         window.open(url);
+
+        HttpClient.getInstance().sendTwiteer(2);
     }
 
-    public static connectWallet(){
+    public static async connectWallet(){
+        LanauageManager.playSound();
 
+        EventManger.eventTarget.emit(EventManger.EEventName.OPEN_TON_CONNNECT);
     }
 
     public static disConnectWalletr(){
-        
+        LanauageManager.playSound();
+        EventManger.eventTarget.emit(EventManger.EEventName.OPEN_TON_CONNNECT);
+    }
+
+    public static addVip(){
+        LanauageManager.playSound();
+        let url = TgManager.teVipUrl;
+        window.open(url);
     }
 
     public static addTelegramChannel(){
+        LanauageManager.playSound();
         let url = TgManager.channelUrl;
 
         window.location.href = url;
+
+        HttpClient.getInstance().sendJoinCommunity();
     }
 
     public static visitWebsite(){
+        LanauageManager.playSound();
         let url = TgManager.wibsiteUrl;
         window.open(url);
 
@@ -53,9 +96,10 @@ export class TgManager {
     }
 
     public static shareTelegram(){
+        LanauageManager.playSound();
         //EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("shareTelegram"))
 
-        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.inivitId +"&text=welcome to play"
+        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId +"&text=welcome to play"
         let web = window.open(url);
 
         //window.location.href = url;
@@ -64,22 +108,38 @@ export class TgManager {
         HttpClient.getInstance().sendDailyshare();
     }
 
-    public static shareTwitter(){
-
-    }
-
     public static invite(){
-        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.inivitId +"&text=welcome to play"
+        LanauageManager.playSound();
+        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId +"&text=welcome to play"
         window.open(url);
 
         HttpClient.getInstance().sendDailyinvite();
     }
 
+    public static shareTwitter(){
+        LanauageManager.playSound();
+        var text = "welcome to play coincraze!";  
+        var url = TgManager.shareUrl + gameData.saveData.invitId; // 当前游戏的URL    
+    
+        var twitterUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) +   
+                        "&url=" + encodeURIComponent(url)// +   
+                        // "&via=yourTwitterHandle&" +  
+                        // "related=yourTwitterHandle&" +  
+                        // "hashtags=YourGameHashtag&" +  
+                        // "tw_p=tweetbutton";  
+     
+        window.open(twitterUrl);  
+
+        HttpClient.getInstance().sendTwiteer(3);
+    }
+
     public static repostTwitter(){
-        let url = "tg://msg_url?url=https://t.me/szxsssBot/coinapp?startapp=" + gameData.saveData.inivitId +"&text=welcome to play";
+        LanauageManager.playSound();
+
+        let url = "https://x.com/intent/retweet?tweet_id=1563171880046981123";
         window.open(url);
 
-        HttpClient.getInstance().sendDailyrepost();
+        HttpClient.getInstance().sendTwiteer(4);
     }
 
     public static processURLParameters() {  

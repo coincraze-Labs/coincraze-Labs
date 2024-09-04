@@ -1,4 +1,4 @@
-# Coincraze
+# YangTG
 
 cocoscreator Match-3 game
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin http://49.235.99.118:8099/game/Coincraze.git
+git remote add origin http://49.235.99.118:8099/game/yangtg.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](http://49.235.99.118:8099/game/Coincraze/-/settings/integrations)
+- [ ] [Set up project integrations](http://49.235.99.118:8099/game/yangtg/-/settings/integrations)
 
 ## Collaborate with your team
 

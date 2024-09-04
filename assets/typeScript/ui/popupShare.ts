@@ -44,9 +44,9 @@ export class popupShare extends Component {
 
         this.twitLab.string = LanauageManager.getDesStrById(77);
         this.tgLab.string = LanauageManager.getDesStrById(78);
-        this.inivtLab.string = LanauageManager.getDesStrById(79);
+        this.inivtLab.string = LanauageManager.getDesStrById(79) + ": ";
 
-        this.inivtIdLab.string = gameData.saveData.inivitId;
+        this.inivtIdLab.string = gameData.saveData.invitId;
 
         this.chall.active = gameData.isChanllengeShare;
         if (this.chall.active){
@@ -63,7 +63,7 @@ export class popupShare extends Component {
     }
 
     onTwiterClick(){
-        TgManager.repostTwitter();
+        TgManager.shareTwitter();
     }
 
     onTGClick(){
@@ -71,15 +71,8 @@ export class popupShare extends Component {
     }
 
     onCopyClick(){
-         // 这里是你要复制的文本  
-         const textToCopy = TgManager.shareUrl + gameData.saveData.inivitId;  
-         try {  
-            var successful = document.execCommand(textToCopy);  
-            var msg = successful ? 'successful' : 'unsuccessful';  
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("copy success")) 
-        } catch (err) {  
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("copy fail"))   
-        } 
+         const textToCopy = TgManager.shareUrl + gameData.saveData.invitId;  
+         LanauageManager.copyText(textToCopy);
     }
 }
 
