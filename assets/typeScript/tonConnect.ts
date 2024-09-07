@@ -9,21 +9,20 @@ const { ccclass, property } = _decorator;
 export class tonConnect  extends Component{
     @property(Label)
     connectLabel:Label = null;
-
+    
     private _bTonInit: boolean = false;
-
+    
     private _cocosGameFi: GameFi;
     private _connectUI: WalletConnector;
 
     protected start(): void {
+        // 
         this._initTonUI();
 
         EventManger.eventTarget.on(EventManger.EEventName.OPEN_TON_CONNNECT, this.openTonconnect, this);
     }
 
     async _initTonUI() {
-
-        // this.toolView.node.active = false;
         // fetch('https://www.coincraze.ai/tonconnect-manifest.json')  
         // .then(response => {  
         //     if (!response.ok) {  
@@ -39,7 +38,8 @@ export class tonConnect  extends Component{
         // }); 
 
         let uiconnector = new TonConnectUI({
-            manifestUrl: "https://www.coincraze.ai/",
+            // manifestUrl: "https://www.coincraze.ai/tonconnect-manifest.json",
+            manifestUrl: "https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json",
         });
         this._cocosGameFi = await GameFi.create({
             connector: uiconnector
@@ -64,6 +64,7 @@ export class tonConnect  extends Component{
         this.updateConnect();
     }
 
+    
     public isConnected(): boolean {
         if (!this._connectUI) {
             console.error("ton ui not inited!");

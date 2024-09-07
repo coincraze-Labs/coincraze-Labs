@@ -1,9 +1,10 @@
-import { _decorator, Component, Label, Node, Sprite, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Label, Node} from 'cc';
 import { UIManager } from '../UIManager';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
-import { gameData, popupCommonType, popupLabType } from '../gameData';
+import { gameData } from '../gameData';
 import { EventManger } from '../EventManger';
 import { HttpClient } from '../net/HttpClient';
+import { GameFi,beginCell, Cell,TonConnectUI,SendTransactionRequest, Address , toNano ,TonClient } from '@ton/cocos-sdk';
 const { ccclass, property } = _decorator;
 
 @ccclass('popupBuyItem')
@@ -36,11 +37,21 @@ export class popupBuyItem extends Component {
     private itemData:ShopItemData;
 
     private buyNum:number = 0;
+    private _cocosGameFi: GameFi;
+
+    private _connectUI: TonConnectUI;
+    private client: TonClient;
+
+    private RECIVER:string = "UQBfpRJFEr3__8uIvfXnkxWPf1cOsT8UwaM-mprM7XjFD6Vj"
+
 
     protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
     }
-
+    public setGameFi(gamefi: GameFi) {
+        this._cocosGameFi = gamefi;
+        this._connectUI =gamefi.walletConnector;  
+    }
     onEnable() {
         HttpClient.getInstance().sendTonPrice();
         this.refresh()
@@ -49,6 +60,9 @@ export class popupBuyItem extends Component {
     refresh(){
         this.itemData = gameData.curBuyShopData;
         this.buyNum = gameData.curBuyCount;
+        this.client = new TonClient({
+            endpoint: 'https://toncenter.com/api/v2/jsonRPC',
+        });
         if (!this.itemData){
             return;
         }
@@ -76,15 +90,72 @@ export class popupBuyItem extends Component {
 
     onBtn1Click(){
         LanauageManager.playSound();
+        this.onTransferTon()
     }
 
     onBtn2Click(){
         LanauageManager.playSound();
+        this.onTransferJetton()
     }
 
     onBtn3Click(){
         LanauageManager.playSound();
     }
+    async  getUserWalletAddress(userAddress, jettonMasterAddress) {
+       
+        const userAddressCell = beginCell().storeAddress(userAddress).endCell()
+        const response = await this.client.runMethod(jettonMasterAddress, "get_wallet_address", [
+            {type: "slice", cell: userAddressCell}
+        ])
+        return response.stack.readAddress()
+    } 
+    async onTransferTon() {
+        if (this._cocosGameFi && this._cocosGameFi.walletConnector?.connected) {
+        const transaction = {
+            validUntil:Math.floor(Date.now() / 1000) + 360,
+            messages: [
+                {
+                    address: this.RECIVER, 
+                    amount: toNano(0.1).toString()
+                }
+            ]
+        }
+        const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)  
+        const hash = Cell.fromBase64(result.boc)
+        .hash()
+        .toString("base64");
 
+    }
+    }
+    async  onTransferJetton() {
+        if (this._cocosGameFi && this._cocosGameFi.walletConnector?.connected) {
+            const userAddress = Address.parse(this._connectUI.account.address)
+            const body = beginCell()
+            .storeUint(0xf8a7ea5, 32)     
+            .storeUint(0, 64)           
+            .storeCoins(toNano("0.1"))  
+            .storeAddress(Address.parse(this.RECIVER)) 
+            .storeAddress(Address.parse(this.RECIVER)) 
+            .storeMaybeRef(null)        
+            .storeCoins(1)
+            .storeMaybeRef(null)       
+            .endCell(); 
+            const jettonMasterAddress = Address.parse("EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs")
+            const jettonWalletAddress = await this.getUserWalletAddress(userAddress, jettonMasterAddress)
+            
+        const transaction = {
+            validUntil: Math.floor(Date.now() / 1000) + 360,
+            messages: [
+                {
+                    address: jettonWalletAddress.toString(), 
+                    amount: toNano("0.1").toString(), 
+                    payload: body.toBoc().toString("base64") 
+                }
+            ]
+        }
+        const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)
+        console.log(`Send tx result: ${JSON.stringify(result)}`);
+        }
+    }
 }
 

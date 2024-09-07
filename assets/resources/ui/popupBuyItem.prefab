@@ -1110,7 +1110,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab1",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -1269,7 +1269,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab2",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -1428,7 +1428,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab3",
-    "_objFlags": 512,
+    "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -1864,8 +1864,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "cc.BlockInputEvents",
-    "handler": "onYesClick",
+    "_componentId": "64f71WvzN5H1Y7enXJi9n1I",
+    "handler": "onBtn1Click",
     "customEventData": ""
   },
   {
@@ -2982,8 +2982,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "4c995VVmElOIbGrWMt599y6",
-    "handler": "onYesClick",
+    "_componentId": "64f71WvzN5H1Y7enXJi9n1I",
+    "handler": "onBtn2Click",
     "customEventData": ""
   },
   {
@@ -3530,7 +3530,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 750,
-      "height": 1624.0000000000002
+      "height": 1624
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
