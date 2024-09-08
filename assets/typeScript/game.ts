@@ -10,7 +10,6 @@ import { levelView } from './ui/levelView';
 import { UIManager } from './UIManager';
 import { LanauageManager } from './LanauageManager';
 import { mainView } from './ui/mainView';
-import { tonConnect } from './tonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('game')

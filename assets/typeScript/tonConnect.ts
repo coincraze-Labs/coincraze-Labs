@@ -3,6 +3,7 @@ import { _decorator, Component, Label, Node } from 'cc';
 import { EventManger } from './EventManger';
 import { LanauageManager } from './LanauageManager';
 import { gameData } from './gameData';
+import { popupBuyItem } from './ui/popupBuyItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('tonConnect')
@@ -16,13 +17,13 @@ export class tonConnect  extends Component{
     private _connectUI: WalletConnector;
 
     protected start(): void {
-        // 
         this._initTonUI();
 
         EventManger.eventTarget.on(EventManger.EEventName.OPEN_TON_CONNNECT, this.openTonconnect, this);
     }
 
     async _initTonUI() {
+       
         // fetch('https://www.coincraze.ai/tonconnect-manifest.json')  
         // .then(response => {  
         //     if (!response.ok) {  
@@ -91,6 +92,7 @@ export class tonConnect  extends Component{
         if (this.isConnected()) {
             const address = this._connectUI.account.address;
             gameData.isBindWallet = true;
+            gameData.cocosGameFi = this._cocosGameFi;
             //this.connectLabel.string = Address.parseRaw(address).toString({ testOnly: true, bounceable: false }).substring(0, 6) + '...';
         } else {
             //this.connectLabel.string = "Connect";

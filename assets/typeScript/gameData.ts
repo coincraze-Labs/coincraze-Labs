@@ -1,6 +1,7 @@
 import { _decorator, assetManager, Component, game, ImageAsset, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { HttpClient } from './net/HttpClient';
 import { randItemData, ShopItemData } from './LanauageManager';
+import { GameFi } from '@ton/cocos-sdk';
 const { ccclass, property } = _decorator;
 
 @ccclass('gameData')
@@ -47,6 +48,7 @@ export class gameData extends Component {
     public static isBindTwitter = false;
 
     public static isBindWallet = false;
+    public static cocosGameFi:GameFi = null;
 
     public static saveDataClick(type:number = 2){
         //HttpClient.getInstance().sendPasLevel(gameData.saveData.addMoney, gameData.saveData.addGold, type);
@@ -65,7 +67,6 @@ export class gameData extends Component {
         var showLevel:string = (level).toString();
         return showLevel;
     }
-
 
 
 //------------------------------------------------------------------------------------------------

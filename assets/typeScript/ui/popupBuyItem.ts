@@ -46,18 +46,19 @@ export class popupBuyItem extends Component {
 
 
     protected start(): void {
+        
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
     }
-    public setGameFi(gamefi: GameFi) {
-        this._cocosGameFi = gamefi;
-        this._connectUI =gamefi.walletConnector;  
-    }
+    
     onEnable() {
         HttpClient.getInstance().sendTonPrice();
         this.refresh()
     }
 
     refresh(){
+        
+        this._cocosGameFi = gameData.cocosGameFi;
+        this._connectUI =this._cocosGameFi.walletConnector;  
         this.itemData = gameData.curBuyShopData;
         this.buyNum = gameData.curBuyCount;
         this.client = new TonClient({
