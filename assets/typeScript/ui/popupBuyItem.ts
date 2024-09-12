@@ -147,9 +147,8 @@ export class popupBuyItem extends Component {
             ]
         }
         const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)  
-        const hash = Cell.fromBase64(result.boc)
-        .hash()
-        .toString("base64");
+        const hash = Cell.fromBase64(result.boc).hash().toString("base64");
+        this.txVerify(hash,this._connectUI.account.address.toString())
 
     }
     }
@@ -180,8 +179,35 @@ export class popupBuyItem extends Component {
             ]
         }
         const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)
-        console.log(`Send tx result: ${JSON.stringify(result)}`);
+        const hash = Cell.fromBase64(result.boc).hash().toString("base64");
+        this.txVerify(hash,this._connectUI.account.address.toString())
         }
+    }
+     async txVerify(hash:string,address:string) {
+        let count = 0;
+        const callback = async function () {
+            if (count >= 2) {
+                this.unschedule(callback);
+            }
+          fetch('https://api.coincraze.ai/api/txVerify',{method: "POST",body:JSON.stringify({hash: hash, address: address})})  
+        .then(response => {  
+            if (!response.ok) {  
+                throw new Error('Network response was not ok');  
+            }  
+            return response.json(); 
+        })  
+        .then(data => {  
+            if(data['success']){
+                HttpClient.getInstance().sendBuyShopItem(gameData.curBuyShopData.id, gameData.curBuyCount);
+                UIManager.close(UIManager.uiNamePath.popupBuyItem);
+            }
+        })  
+        .catch(error => {  
+            console.error('There was a problem with your fetch operation:', error);  
+        }); 
+            count++;
+        }
+        this.schedule(callback, 30);
     }
 }
 
