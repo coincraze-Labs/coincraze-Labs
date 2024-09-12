@@ -5,6 +5,7 @@ import { EventManger } from '../EventManger';
 import { UIManager } from '../UIManager';
 import { blinkAnima } from '../animation/blinkAnima';
 import { TgManager } from '../TgManager';
+import { HttpClient } from '../net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('mainView')
@@ -45,6 +46,12 @@ export class mainView extends Component {
 
     @property(Label)  
     userBagLab: Label = null;
+
+    @property(Label)  
+    userTwitterLab2: Label = null;
+
+    @property(Label)  
+    userBagLab2: Label = null;
 
     @property([Label])  
     labArr: Label[] = [];
@@ -159,6 +166,9 @@ export class mainView extends Component {
                 UIManager.open(UIManager.uiNamePath.popupCommonBtn);
             }else{
                 TgManager.connectTwitter();
+                this.scheduleOnce(()=>{
+                    HttpClient.getInstance().sendGetTaskData();
+                }, 0.3)
             }
         }
         else if (str == "moneyBag"){
@@ -220,13 +230,17 @@ export class mainView extends Component {
 
         //this.chall.active = !gameData.saveData.isChallenged;
 
-        this.userNameLab.string = gameData.saveData.userName;
+        this.userNameLab.string = LanauageManager.truncateString(gameData.saveData.userName);
 
-        this.userIdLab.string = gameData.saveData.user_id.toString();
+        this.userIdLab.string = "UID:" + gameData.saveData.user_id.toString();
 
-        this.userTwitterLab.string = LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
+        this.userTwitterLab.string = gameData.isBindTwitter? LanauageManager.truncateString(gameData.bindTwitterName, 10):"" //LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
 
-        this.userBagLab.string = LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
+        this.userBagLab.string = gameData.isBindWallet? LanauageManager.truncateString(gameData.bindWalletName, 10):""//LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
+
+        this.userTwitterLab2.string = gameData.isBindTwitter? "-":"+";
+
+        this.userBagLab2.string = gameData.isBindWallet? "-":"+";
 
         this.offLine.active = gameData.saveData.offline_card_remaining_time > 0;
         if (this.offLine.active){

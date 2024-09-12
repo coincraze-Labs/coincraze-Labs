@@ -72,6 +72,8 @@ export class levelView extends Component {
 
     onEnable() {
         this.refresh();
+
+        this.bossAnima.active = false;
     }
 
     protected update(deltaTime: number): void {

@@ -27,6 +27,8 @@ export class popupShopBtn extends Component {
 
     onEnable() {
         this.refresh()
+
+        this.desLab.node.active = false;
     }
 
     update(deltaTime: number) {

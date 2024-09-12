@@ -10,6 +10,7 @@ import { levelView } from './ui/levelView';
 import { UIManager } from './UIManager';
 import { LanauageManager } from './LanauageManager';
 import { mainView } from './ui/mainView';
+import { tonConnect } from './tonConnect';
 const { ccclass, property } = _decorator;
 
 @ccclass('game')
@@ -118,6 +119,9 @@ export class game extends Component {
     mainView = null
 
     @property({type:Node})
+    rewardView = null
+
+    @property({type:Node})
     loading:Node = null
 
     @property({type:Animation})
@@ -174,9 +178,14 @@ export class game extends Component {
 
     start() {
         if (gameData.saveData.offline_rewards > 10){
-            LanauageManager.popupCommonlType = popupCommonType.offLineCoin
+            LanauageManager.popupCommonlType = popupCommonType.offLineCoin;
             UIManager.open(UIManager.uiNamePath.popupCommonBtn);
         }
+        // gameData.saveData.special_reward = [17,18,19];
+        if (gameData.saveData.special_reward && gameData.saveData.special_reward.length > 0){
+            this.rewardView.active = true;
+        }
+
         this.levelmain.active = false;
         this.mainView.active = true;
         this.isWX = WECHAT
@@ -234,7 +243,16 @@ export class game extends Component {
     }
 
     private isLoadingShow(isShow:boolean){
-        this.loading.active = false;
+        if (isShow){
+            this.scheduleOnce(this.changeLoading,0.3)
+        }else{
+            this.unschedule(this.changeLoading);
+            this.loading.active = isShow;
+        }
+    }
+
+    public changeLoading(){
+        this.loading.active = true;
     }
 
     private isShowMainView(isShow:boolean){
@@ -276,7 +294,7 @@ export class game extends Component {
     }
 
     private playMusic(index:number){
-        this.audioSource.volume = index == 0?1:0.6;
+        this.audioSource.volume = index == 0 ? 1:0.5;
         if (gameData.isPlayMusic){
             this.audioSource.stop();
             this.audioSource.clip = this.arrMusic[index];
@@ -288,7 +306,7 @@ export class game extends Component {
 
     public playSound(index:number){
         if (gameData.isPlaySound){
-            this.audioSource.playOneShot(this.arrAudio[index],1)
+            this.audioSource.playOneShot(this.arrAudio[index],1.5)
         }
     }
 
@@ -378,6 +396,7 @@ export class game extends Component {
     }
 
     crateBlocks(){
+        this.numLevel = gameData.saveData.curLevel;
         let num_geShu = -1
         let num_type = this.gameData.getItemType(this.numLevel);
         let stageNum = this.gameData.getStageNum(this.numLevel);
@@ -861,16 +880,17 @@ export class game extends Component {
                 })
             }
             
-            if (gameData.isChanllenge){
-                this.passAni.play("overAni")
-            }else{
-                this.passAni.play("pass")
-            }
+            // if (gameData.isChanllenge){
+            //     this.passAni.play("overAni")
+            // }else{
+            //     this.passAni.play("pass")
+            // }
             
             this.scheduleOnce(function(){
+                this.passAni.play("overAni")
                 UIManager.open(UIManager.uiNamePath.challengeSuccess)
                 HttpClient.getInstance().sendLevelByType(2);
-            },0.2)
+            },0.5)
         }
     }
 
@@ -1062,7 +1082,7 @@ export class game extends Component {
         }else{
             gameData.saveData.arrNumDJ[1]--
             this.useArrNumDJ[1]++
-            HttpClient.getInstance().sendUseItem(6);
+            HttpClient.getInstance().sendUseItem(6, false);
             this.shuaXinDJ()
         }
 
@@ -1124,7 +1144,7 @@ export class game extends Component {
         }else{
             gameData.saveData.arrNumDJ[0]--
             this.useArrNumDJ[0]++
-            HttpClient.getInstance().sendUseItem(5);
+            HttpClient.getInstance().sendUseItem(5, false);
             this.shuaXinDJ()
         }
 
@@ -1195,7 +1215,7 @@ export class game extends Component {
         if (isUseItem){
             gameData.saveData.arrNumDJ[2]--
             this.useArrNumDJ[2]++
-            HttpClient.getInstance().sendUseItem(7);
+            HttpClient.getInstance().sendUseItem(7, false);
         }
         this.shuaXinDJ()
         let children = this.parentBlocks.children

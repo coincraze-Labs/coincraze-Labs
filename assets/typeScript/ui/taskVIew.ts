@@ -1,7 +1,7 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
 import { UIManager } from '../UIManager';
 import { gameData } from '../gameData';
-import { LanauageManager } from '../LanauageManager';
+import { LanauageManager, taskItemData } from '../LanauageManager';
 import { EventManger } from '../EventManger';
 import { HttpClient } from '../net/HttpClient';
 const { ccclass, property } = _decorator;
@@ -21,7 +21,9 @@ export class taskVIew extends Component {
     @property(Prefab)  
     itempfb: Prefab = null;
 
-    private info:any[];
+    private info:taskItemData[];
+
+    private infoType:number[];
 
     private is_daily:boolean = true;
 
@@ -47,15 +49,29 @@ export class taskVIew extends Component {
         this.speciaLab.string = LanauageManager.getDesStrById(43);
 
         this.info = [];
+        this.infoType = [];
         for (let index = 0; index < LanauageManager.taskConfig.length; index++) {
             let element = LanauageManager.taskConfig[index];
             if (element && element.is_daily == this.is_daily){
-                this.info.push(element);
+                if (element.is_hidden){
+                    continue;
+                }
+                if (element.task_type > 1){
+                    if (this.getIsShow(element)){
+                        this.info.push(element);
+                        this.infoType.push(element.task_type);
+                    }
+                }else{
+                    this.info.push(element);
+                }
             }
         }
         if (!this.info){
             return;
         }
+        this.info.sort((a, b) => {  
+            return a.sort - b.sort;  
+        });  
         for (let index = 0; index < this.itemContent.children.length; index++) {
             let itemshow = this.itemContent.children[index];
             itemshow.active = false;
@@ -74,6 +90,18 @@ export class taskVIew extends Component {
             item.getComponent('taskItem')?.refresh(itemData);
             
         }
+    }
+
+    public getIsShow(itemData:taskItemData){
+        if ( this.infoType.indexOf(itemData.task_type) < 0){
+            let state = LanauageManager.getTaskState(itemData.id);
+            if (state == 3){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return false;
     }
 
     onGoCompleteTask(){

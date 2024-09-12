@@ -46,8 +46,8 @@ export class challengeSuccess extends Component {
 
             this.rewardList = [8,9];
 
-            let coinNum = 100*(gameData.saveData.curLevel**0.5)
-            let exp = 100*gameData.saveData.curLevel*0.5;
+            let coinNum = gameData.saveData.passRewardout*(gameData.saveData.curLevel**gameData.saveData.passRewardin)
+            let exp = 0.8* gameData.saveData.passRewardout*gameData.saveData.curLevel**gameData.saveData.passRewardin;
 
             this.rewardNum = [coinNum, exp];
         }
@@ -57,12 +57,12 @@ export class challengeSuccess extends Component {
 
             this.noLab.string = LanauageManager.getDesStrById(6);
 
-            this.rewardList = [8,9,1];
+            this.rewardList = [8,9,1,2];
 
-            let coinNum = 100*(gameData.saveData.curLevel**0.5)
-            let exp = 100*gameData.saveData.curLevel*0.5;
+            let coinNum = gameData.saveData.passRewardout*(gameData.saveData.curLevel**gameData.saveData.passRewardin)
+            let exp = 0.8* gameData.saveData.passRewardout*gameData.saveData.curLevel**gameData.saveData.passRewardin;
             
-            this.rewardNum = [coinNum, exp, 1]
+            this.rewardNum = [coinNum, exp, 1,1]
         }
 
         for (let index = 0; index < this.itemContent.children.length; index++) {

@@ -78,7 +78,11 @@ export class popupLabel extends Component {
 
         if (this.desId == 129){
             this.desLab.string = LanauageManager.getDesStrById(this.desId).replace("&1", gameData.saveData.userLevel.toString());
-        }else{
+        }else if (this.desId == 14){
+            let rat = gameData.getInitNum(gameData.saveData.up_coin_out * (gameData.saveData.userLevel**gameData.saveData.up_coin_in)*100, 1000000)  + "%"
+            this.desLab.string = LanauageManager.getDesStrById(this.desId).replace("&1", rat);
+        }
+        else{
             this.desLab.string = LanauageManager.getDesStrById(this.desId);
         }
 

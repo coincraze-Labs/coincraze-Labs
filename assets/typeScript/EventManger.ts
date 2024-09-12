@@ -35,6 +35,8 @@ export class EventManger {
 
         OPEN_TON_CONNNECT:"OPEN_TON_CONNNECT",
 
+        OPEN_STAR_BUY:"OPEN_STAR_BUY",
+
         LOADING_IS_SHOW:"LOADING_IS_SHOW",
     };
 }

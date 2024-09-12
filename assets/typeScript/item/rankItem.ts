@@ -52,18 +52,20 @@ export class rankItem extends Component {
 
         this.rangeData = data;
 
-        if (rank <= 3){
+        gameData.replaceHead(this.head, data.avatar);
+
+        if (rank <= 3 && rank >=1){
             this.rankLab.string = "";
             this.ranksp.spriteFrame = this.rankArr[rank-1];
             this.ranksp.node.active = true;
         }else{
-            this.rankLab.string = rank.toString();
+            this.rankLab.string = rank==0?"--": rank.toString();
             this.ranksp.node.active = false;
         }
 
         this.desLab.string = LanauageManager.getDesStrById(this.rankDes[this.rankType-1]) + ":";
 
-        this.scheduleOnce(this.onPositon, 0.2);  
+        this.scheduleOnce(this.onPositon, 0.1);  
         
         this.iconSp.spriteFrame = this.iconArr[this.rankType-1];
         

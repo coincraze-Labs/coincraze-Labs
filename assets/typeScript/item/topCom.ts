@@ -46,7 +46,7 @@ export class topCom extends Component {
         }
 
         if (this.coinLab.node.active){
-            this.coinLab.string = gameData.saveData.coin.toString();
+            this.coinLab.string = LanauageManager.getCoinNumString(gameData.saveData.coin);
         }
     }
 

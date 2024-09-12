@@ -10,7 +10,7 @@ export class blinkAnima extends Component {
     @property(Number)
     type:Number = 1;
 
-    duration: number = 0.8
+    duration: number = 0.8;
 
     target:UIOpacity;
 
@@ -55,8 +55,8 @@ export class blinkAnima extends Component {
             this.animation = tween(this.target)  
             .to(this.duration, { opacity: 100 })  
             .to(this.duration, { opacity: 255 })  
-            .to(this.duration, { opacity: 100 })  
-            .to(this.duration, { opacity: 255 })  
+            // .to(this.duration, { opacity: 100 })  
+            // .to(this.duration, { opacity: 255 })  
             .call(()=>{
                 if (callBack){
                     callBack();

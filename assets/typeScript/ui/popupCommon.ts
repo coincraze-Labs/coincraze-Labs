@@ -68,9 +68,16 @@ export class popupCommon extends Component {
         }
         else if (LanauageManager.popupCommonlType == popupCommonType.disConnectTwitter){
             TgManager.disConnectTwitter();
+            this.scheduleOnce(()=>{
+                HttpClient.getInstance().sendGetTaskData();
+            }, 0.3)
+            
         }
         else if (LanauageManager.popupCommonlType == popupCommonType.disConnectWalletr){
             TgManager.disConnectWalletr();
+            this.scheduleOnce(()=>{
+                HttpClient.getInstance().sendGetTaskData();
+            }, 0.3)
         }
         else if (LanauageManager.popupCommonlType == popupCommonType.offLineCoin){
             HttpClient.getInstance().sendReceiveOffReward();
@@ -83,7 +90,9 @@ export class popupCommon extends Component {
             TgManager.connectTwitter();
         }
 
-        UIManager.close(this.node);
+        this.scheduleOnce(()=>{
+            UIManager.close(this.node);
+        }, 0.4)
     }
 }
 

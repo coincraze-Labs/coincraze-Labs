@@ -46,7 +46,7 @@ export class popupShare extends Component {
         this.tgLab.string = LanauageManager.getDesStrById(78);
         this.inivtLab.string = LanauageManager.getDesStrById(79) + ": ";
 
-        this.inivtIdLab.string = gameData.saveData.invitId;
+        this.inivtIdLab.string = "..." + gameData.saveData.invitId;
 
         this.chall.active = gameData.isChanllengeShare;
         if (this.chall.active){

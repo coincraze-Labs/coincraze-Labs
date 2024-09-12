@@ -1110,7 +1110,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab1",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -1269,7 +1269,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab2",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -1428,7 +1428,7 @@
   {
     "__type__": "cc.Node",
     "_name": "lab3",
-    "_objFlags": 0,
+    "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
       "__id__": 35
@@ -3218,7 +3218,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 33.771,
+      "x": 7.006,
       "y": -3.738,
       "z": 0
     },
@@ -3259,7 +3259,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 129.5068359375,
+      "width": 66.7236328125,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -3295,7 +3295,7 @@
       "b": 92,
       "a": 255
     },
-    "_string": "0.02 TON",
+    "_string": "0.02 ",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -3498,8 +3498,8 @@
       "__id__": 1
     },
     "component": "",
-    "_componentId": "4c995VVmElOIbGrWMt599y6",
-    "handler": "onYesClick",
+    "_componentId": "64f71WvzN5H1Y7enXJi9n1I",
+    "handler": "onBtn3Click",
     "customEventData": ""
   },
   {
@@ -3530,7 +3530,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 750,
-      "height": 1624
+      "height": 1624.0000000000002
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",

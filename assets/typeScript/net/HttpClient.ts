@@ -6,12 +6,16 @@ import { EventManger } from "../EventManger";
 import { AndroidSdk } from "../AndroidSdk";
 import { LanauageManager } from "../LanauageManager";
 import { UIManager } from "../UIManager";
+import { TgManager } from "../TgManager";
 
 export class HttpClient {
     private httpTryCount = 10;  
     private httpTryNum = 0;     
     private static instance:HttpClient = null;
     private isInit:boolean = true;
+
+    private isShowTip:boolean = true;
+
     public static getInstance():HttpClient {
         if(this.instance == null) {
             this.instance = new HttpClient();
@@ -39,6 +43,7 @@ export class HttpClient {
             return;
         }
         this.isInit = true;
+        LanauageManager.isInitData = false;
         zc.http.post("api/user", this.onLogin.bind(this), params);
     }
 
@@ -111,6 +116,10 @@ export class HttpClient {
                         gameData.saveData.curLevel = data.gameinfo.checkpoint_detail;
                     }
 
+                    if (data.gameinfo.daily_pass_num != undefined){
+                        gameData.saveData.daily_pass_num = data.gameinfo.daily_pass_num;
+                    }
+
                 }
 
                 if (data.game){
@@ -143,6 +152,10 @@ export class HttpClient {
                         gameData.saveData.daily_task = data.task_get.daily_task;
                     }
 
+                    if (data.task_get.package_task){
+                        gameData.saveData.special_reward = data.task_get.package_task;
+                    }
+
                     gameData.saveData.isChallenged = LanauageManager.getTaskIsComplete(15);
 
                     gameData.isBindTwitter = LanauageManager.getTaskIsComplete(3);
@@ -157,6 +170,13 @@ export class HttpClient {
                     gameData.saveData.stateNum = data.game_detail.stateNum;
                     gameData.saveData.bossNum = data.game_detail.bossNum;
                     gameData.saveData.challengeNum = data.game_detail.challengeNum;
+
+                    gameData.saveData.passRewardout =  data.game_detail.checkpoint_type_out;
+                    gameData.saveData.passRewardin =  data.game_detail.checkpoint_type_in;
+                    gameData.saveData.up_coin_out =  data.game_detail.up_out;
+                    gameData.saveData.up_coin_in =  data.game_detail.up_in;
+
+                    TgManager.repostTwitterUrl = data.game_detail.tweet_url;
                 }
 
                 if (data.personal_detail){
@@ -172,12 +192,16 @@ export class HttpClient {
                 //zc.http.addHeader("Authorization",token);
                 //console.log("token----------" + token)
             }
-            // if (this.isInit){
-            //     director.loadScene("game")
-            // }
+            if (this.isInit && LanauageManager.isLoad){
+                director.loadScene("game")
+            }
             this.isInit = false;
+            LanauageManager.isInitData = true;
             this.refreshView();
         }else{
+            if (this.isInit){
+                this.showFail("111" , "Network error, login failed")
+            }
             this.showFail("" , res.res? res.res.msg: res.err)
         }
     }
@@ -199,18 +223,21 @@ export class HttpClient {
         zc.http.post("api/offline", this.onLogin.bind(this), params);
     }
 
-    sendUseItem(id:number){
+    sendUseItem(id:number, isShowTip:boolean = true){
         let params = {
             "user_id":gameData.saveData.user_id,
             "card_id":id
         }
+        this.isShowTip = isShowTip;
         zc.http.post("api/usecard", this.onUseItem.bind(this), params);
     }
 
     onUseItem(res:HttpReturn){
         this.onLogin(res);
         if (res.res && res.res.code == "200"){
-            this.showFail("", LanauageManager.getDesStrById(127));
+            if (this.isShowTip){
+                this.showFail("111", LanauageManager.getDesStrById(127));
+            }
         }else{
             this.showFail("" , res.res? res.res.msg: res.err)
         }
@@ -228,7 +255,7 @@ export class HttpClient {
     onBuyShopItem(res:HttpReturn){
         this.onLogin(res);
         if (res.res && res.res.code == "200"){
-            this.showFail("", LanauageManager.getDesStrById(108));
+            this.showFail("111", LanauageManager.getDesStrById(108));
         }else{
             this.showFail("" , res.res? res.res.msg: res.err)
         }
@@ -246,7 +273,14 @@ export class HttpClient {
             "user_id":gameData.saveData.user_id,
             "task_id":taskId,
         }
-        zc.http.post("api/task", this.onLogin.bind(this), params);
+        zc.http.post("api/task", this.onReceiveTaskReward.bind(this), params);
+    }
+
+    onReceiveTaskReward(res:HttpReturn){
+        this.onLogin(res);
+        if (res.res && res.res.code == "200"){
+            this.showFail("111", LanauageManager.getDesStrById(45));
+        }
     }
 
     sendGetTaskData(){
@@ -268,6 +302,9 @@ export class HttpClient {
         if (res.res && res.res.code == "200"){
             if (res.res.self_rank){
                 gameData.saveData.selfRank = res.res.self_rank;
+            }
+            if (res.res.count){
+                gameData.saveData.allPlayNum = res.res.count;
             }
             if (res.res.all_rank){
                 gameData.saveData.rankList = res.res.all_rank;
@@ -345,12 +382,42 @@ export class HttpClient {
         zc.http.post("api/joincommunity", this.onLogin.bind(this), params);
     }
 
+    sendPremium(premium:Number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "is_premium":premium,
+        }
+        zc.http.post("api/premium", this.onsendPremium.bind(this), params);
+    }
+
+    onsendPremium(res:HttpReturn){
+
+    }
+
+    sendGetinvoiceLink(name:string, stars:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "description":name,
+            "amount": stars
+        }
+        zc.http.post("api/creat_link", this.onSendGetinvoiceLink.bind(this), params);
+    }
+
+    onSendGetinvoiceLink(res:HttpReturn){
+        if (res.res && res.res.code == "200"){
+            EventManger.eventTarget.emit(EventManger.EEventName.OPEN_STAR_BUY, res.res.invoice_link);
+        }
+    }
+
+
     refreshView(){
         EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME);
     }
 
     showFail(str:string,  msg:string) {
-        EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, (str + msg))
+        if (str == "111"){
+            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, msg)
+        }
     }
 
 }

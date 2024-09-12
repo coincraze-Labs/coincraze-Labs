@@ -3,8 +3,10 @@ import { AndroidSdk } from './AndroidSdk';
 import { HttpClient } from './net/HttpClient';
 import { gameData, SaveData } from './gameData';
 import { EventManger } from './EventManger';
-import { TgManager } from './TgManager';
+import { TgManager, TonAddressConfig } from './TgManager';
 import { UIManager } from './UIManager';
+import { TelegramWebApp } from '../cocos-telegram-miniapps/scripts/telegram-web';
+import { LanauageManager } from './LanauageManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('login')
@@ -42,6 +44,7 @@ export class login extends Component {
     static instance;
 
     start() {
+
         gameData.saveData = new SaveData();
         // director.preloadScene("game");
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_TIP, this.showTip, this);
@@ -61,6 +64,11 @@ export class login extends Component {
         // }
         this.loadPross.progress = 0
         this.loginRequest();
+
+        // const element = document.documentElement; // 通常是 <html> 元素  
+        // if (element && element.requestFullscreen) {  
+        //     element.requestFullscreen();  
+        // }
     }
 
     showStr(): void {
@@ -122,31 +130,40 @@ export class login extends Component {
         TgManager.processURLParameters();
 
         tween(this.loadPross)
-        .to(8,{progress:1}, { easing: 'quadIn' })
-        .to(0.1,{progress:0}, { easing: 'quadIn' })
-        .to(8,{progress:1}, { easing: 'quadIn' })
-        .to(0.1,{progress:0}, { easing: 'quadIn' })
-        .to(20,{progress:1}, { easing: 'quadIn' })
-        .to(0.1,{progress:0}, { easing: 'quadIn' })
-        .to(20,{progress:0.98}, { easing: 'quadIn' })
+        .to(30,{progress:0.95}, { easing: 'quadIn' })
+        // .to(0.1,{progress:0}, { easing: 'quadIn' })
+        // .to(8,{progress:1}, { easing: 'quadIn' })
+        // .to(0.1,{progress:0}, { easing: 'quadIn' })
+        // .to(20,{progress:1}, { easing: 'quadIn' })
+        // .to(0.1,{progress:0}, { easing: 'quadIn' })
+        // .to(20,{progress:0.98}, { easing: 'quadIn' })
         .start();
         
         login.instance = this;
         //director.loadScene("game")  
         resources.preloadDir("ui", ()=>{
             console.log("preload success")
-            director.loadScene("game")
+            //director.loadScene("game")  
+            director.preloadScene("game", this.onComplete)
          })
     }
       
     onComplete() {  
+        console.log("preload game success")
         tween( login.instance.loadPross).stop();
         tween( login.instance.loadPross)
-        .to(0.2,{progress:1})
+        .to(0.2,{progress:0.98})
         .call(()=>{
-            director.loadScene("game")  
+            console.log("load game success")
+            if (LanauageManager.isInitData){
+                director.loadScene("game")  
+            }else{
+                //login.instance.showTip("Network error, login failed")
+            }
+            LanauageManager.isLoad = true;
         })
-        .to(10,{progress:1})
+        .to(0.1,{progress:1})
+        .to(50,{progress:1})
         .start();
     } 
 

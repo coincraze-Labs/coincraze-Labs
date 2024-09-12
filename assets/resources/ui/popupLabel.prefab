@@ -895,7 +895,7 @@
     "_actualFontSize": 25,
     "_fontSize": 25,
     "_fontFamily": "Arial",
-    "_lineHeight": 25,
+    "_lineHeight": 30,
     "_overflow": 1,
     "_enableWrapText": true,
     "_font": null,

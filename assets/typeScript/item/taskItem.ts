@@ -43,8 +43,6 @@ export class taskItem extends Component {
     @property(Label)  
     prossLab: Label = null;
 
-    private isCanGo:number[] = [1,2,3,4,6,7,10,11,12,13,14,16];
-
     private taskData:taskItemData
 
     refresh(data:taskItemData){
@@ -55,9 +53,13 @@ export class taskItem extends Component {
 
         this.desLab.string = LanauageManager.getDesStrById( this.taskData.des_id).replace("&1", this.taskData.task_num.toString());
 
-        if (data.id == 11 ||data.id == 12 ||data.id == 13){
+        if (data.task_type == 2){
             this.prossLab.string = gameData.saveData.inviteNum + "/" + this.taskData.task_num;
-        }else{
+        }
+        else if (data.task_type == 3){
+            this.prossLab.string = gameData.saveData.daily_pass_num + "/" + this.taskData.task_num;
+        }
+        else{
             this.prossLab.string = "";
         }
 
@@ -100,7 +102,7 @@ export class taskItem extends Component {
                     this.itemContent.addChild(item);
                 }
                 item.active = true;
-                item.getComponent('item')?.refresh(itemData, rewardNum[index]);
+                item.getComponent('item')?.refresh(itemData, rewardNum[index], false);
             }
         }
     }
@@ -136,13 +138,8 @@ export class taskItem extends Component {
                 gameData.isBackNotShop = false;
                 UIManager.open(UIManager.uiNamePath.shopView);
                 break;
-            case 11:
-            case 12:
-            case 13:
-                TgManager.invite();
-                break;
             case 14:
-                TgManager.shareTelegram();
+                TgManager.shareTwitter();
                 break;
             case 16:
                 TgManager.repostTwitter();
@@ -150,9 +147,17 @@ export class taskItem extends Component {
             default:
                 break;
         }
+        switch (this.taskData.task_type) {
+            case 2:
+                TgManager.invite();
+                break;
+            case 3:
+                UIManager.close(UIManager.uiNamePath.taskView);
+                break;
+        }
         this.scheduleOnce(()=>{
             HttpClient.getInstance().sendGetTaskData();
-        }, 1)
+        }, 0.5)
     }
 }
 

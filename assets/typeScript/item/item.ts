@@ -23,7 +23,7 @@ export class item extends Component {
 
     }
 
-    refresh(data:any, num:number){
+    refresh(data:any, num:number, isShowName:boolean = true){
         if (!data){
             return;
         }
@@ -33,6 +33,8 @@ export class item extends Component {
         this.nameLab.string = LanauageManager.getDesStrById(this.itemData.name_id);
 
         this.numLab.string = Math.floor(num).toString();
+
+        this.nameLab.node.active = isShowName;
     }
 
 

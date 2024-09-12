@@ -1,7 +1,7 @@
 import { _decorator, assetManager, Component, game, ImageAsset, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { HttpClient } from './net/HttpClient';
 import { randItemData, ShopItemData } from './LanauageManager';
-import { GameFi } from '@ton/cocos-sdk';
+import { TonAddressConfig } from './TgManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('gameData')
@@ -43,12 +43,19 @@ export class gameData extends Component {
 
     public static popupTipItemId:number = 0;
 
+    public static tonAddressConfig:TonAddressConfig;
+
     //--------------------task--------------------
 
     public static isBindTwitter = false;
 
     public static isBindWallet = false;
-    public static cocosGameFi:GameFi = null;
+
+    public static bindWalletName:string = "";
+
+    public static bindTwitterName:string = "";
+
+    public static isShowTip = true;
 
     public static saveDataClick(type:number = 2){
         //HttpClient.getInstance().sendPasLevel(gameData.saveData.addMoney, gameData.saveData.addGold, type);
@@ -67,6 +74,7 @@ export class gameData extends Component {
         var showLevel:string = (level).toString();
         return showLevel;
     }
+
 
 
 //------------------------------------------------------------------------------------------------
@@ -154,8 +162,10 @@ export class gameData extends Component {
 
     
     public static getExpSum(): number{
-        let level = gameData.saveData.curLevel;
-        return (level+1)*100*0.6;
+        let level = gameData.saveData.userLevel;
+        let num = ((level+1)**1.2)*100
+        let num2 = Math.pow((level+1), 1.2)*100
+        return num;
     }
 //--------------------------------------------------------------------------------------------------
     start() {
@@ -360,15 +370,21 @@ export class SaveData  {
 
     daily_task_isRecive:number[] = [];
 
+    special_reward:number[] = [];
+
     //-----------------------rank---------------------------------------------
 
     rankList:randItemData[] = [];
 
     selfRank:randItemData;
 
+    allPlayNum:number = 0;
+
     invitId:string = "456SFGR1545SFGRA";
 
     inviteNum:number = 0;
+
+    daily_pass_num:number = 0;
 
     //------------------------------------------------------------
 
@@ -381,4 +397,12 @@ export class SaveData  {
     challengeNum:number = 30;
 
     tonPrice:number = 0;
+
+    passRewardout:number = 0;
+
+    passRewardin:number = 0;
+
+    up_coin_out:number = 0;
+
+    up_coin_in:number = 0;
 }
