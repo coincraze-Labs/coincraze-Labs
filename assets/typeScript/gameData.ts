@@ -44,6 +44,7 @@ export class gameData extends Component {
     public static popupTipItemId:number = 0;
 
     public static tonAddressConfig:TonAddressConfig;
+     public static cocosGameFi:GameFi = null;
 
     //--------------------task--------------------
 
