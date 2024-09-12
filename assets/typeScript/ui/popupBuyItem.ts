@@ -66,6 +66,7 @@ export class popupBuyItem extends Component {
         this.buyNum = gameData.curBuyCount;
         this.client = new TonClient({
             endpoint: 'https://toncenter.com/api/v2/jsonRPC',
+             apiKey: 'f19c2cd05d9f63bbeecc2d03ba80389f22fedefc6a150ae1bba1ee85118e20e0',
         });
         this.itemData = gameData.curBuyShopData;
         this.buyNum = gameData.curBuyCount;
