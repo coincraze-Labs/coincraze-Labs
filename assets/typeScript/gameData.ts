@@ -2,6 +2,7 @@ import { _decorator, assetManager, Component, game, ImageAsset, Node, Sprite, Sp
 import { HttpClient } from './net/HttpClient';
 import { randItemData, ShopItemData } from './LanauageManager';
 import { TonAddressConfig } from './TgManager';
+import { GameFi } from '@ton/cocos-sdk';
 const { ccclass, property } = _decorator;
 
 @ccclass('gameData')
@@ -111,7 +112,7 @@ export class gameData extends Component {
         return seconds;
     }
 
-    public static getLeftTime(diffSeconds:number): string{
+    public static getLeftTime(diffSeconds:number, type:number = 1): string{
         let hours = Math.floor( diffSeconds / 3600);  
         let minutes = Math.floor(( diffSeconds % 3600) / 60);  
         let secs =  diffSeconds % 60;  
@@ -126,7 +127,9 @@ export class gameData extends Component {
         if (hours == 0 && minutes == 0){
             return  `${s1}`;
         }
- 
+        if (type == 2){
+            return  `${h1}/${m1}/${s1}`;
+        }
         return  `${h1}:${m1}:${s1}`;
     }
 

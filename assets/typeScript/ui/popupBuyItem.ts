@@ -82,12 +82,12 @@ export class popupBuyItem extends Component {
         
         this._bnt1Num = coin*0.9/gameData.saveData.tonPrice;
         this._bnt2Num = coin*0.9;
-        this.btn1_lab1.string = LanauageManager.getCoinNumString(coin*0.9/gameData.saveData.tonPrice) + " " + LanauageManager.getDesStrById(105);
-        this.btn1_lab2.string = LanauageManager.getCoinNumString(coin/gameData.saveData.tonPrice)  + LanauageManager.getDesStrById(105);
+        this.btn1_lab1.string = LanauageManager.getCoinNumString(coin*0.9/gameData.saveData.tonPrice, 2) + " " + LanauageManager.getDesStrById(105);
+        this.btn1_lab2.string = LanauageManager.getCoinNumString(coin/gameData.saveData.tonPrice, 2)  + LanauageManager.getDesStrById(105);
         //this.btn1_lab3.string = "10%" + LanauageManager.getDesStrById(107);
 
-        this.btn2_lab1.string = LanauageManager.getCoinNumString(coin*0.9) + " " +  LanauageManager.getDesStrById(106);
-        this.btn2_lab2.string = LanauageManager.getCoinNumString(coin)  +  LanauageManager.getDesStrById(106);
+        this.btn2_lab1.string = LanauageManager.getCoinNumString(coin*0.9, 2) + " " +  LanauageManager.getDesStrById(106);
+        this.btn2_lab2.string = LanauageManager.getCoinNumString(coin, 2)  +  LanauageManager.getDesStrById(106);
         //this.btn2_lab3.string = "10%" + LanauageManager.getDesStrById(107);
 
         this.btn3_lab1.string = LanauageManager.getCoinNumString(coin*70);

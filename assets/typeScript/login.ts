@@ -68,8 +68,9 @@ export class login extends Component {
         // const element = document.documentElement; // 通常是 <html> 元素  
         // if (element && element.requestFullscreen) {  
         //     element.requestFullscreen();  
-        // }
+        // }  
     }
+
 
     showStr(): void {
         if (this.isneed){

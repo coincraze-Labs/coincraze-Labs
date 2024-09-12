@@ -60,6 +60,10 @@ export class rewardView extends Component {
                 item = instantiate(this.itemPfb);
                 this.itemContent.addChild(item);
             }
+            if (this.rewardNum[index] <= 0){
+                item.active = false;
+                continue;
+            }
             item.active = true;
             item.getComponent('item')?.refresh(itemData, this.rewardNum[index]);
         }

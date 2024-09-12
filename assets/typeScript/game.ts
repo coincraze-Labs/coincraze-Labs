@@ -927,7 +927,7 @@ export class game extends Component {
 
     callBackBtn(event:Event,str:string){
         if (str == 'btn_3') {
-            if (this.useArrNumDJ[2] > 2 && this.isLimit){
+            if (this.useArrNumDJ[2] >= 2 && this.isLimit){
                 this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }
@@ -941,7 +941,7 @@ export class game extends Component {
         }else if (str == 'btn_shuChu') {
             this.shuChuPosBlocks()
         }else if (str == 'btn_1') {//出去3个块
-            if (this.useArrNumDJ[0] > 2 && this.isLimit){
+            if (this.useArrNumDJ[0] >= 2 && this.isLimit){
                 this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }
@@ -955,7 +955,7 @@ export class game extends Component {
                 this.btn1()
             }
         }else if (str == 'btn_2') {//撤回
-            if (this.useArrNumDJ[1] > 2 && this.isLimit){
+            if (this.useArrNumDJ[1] >= 2 && this.isLimit){
                 this.showTip(LanauageManager.getDesStrById(83))
                 return;
             }

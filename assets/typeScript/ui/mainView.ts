@@ -47,11 +47,17 @@ export class mainView extends Component {
     @property(Label)  
     userBagLab: Label = null;
 
-    @property(Label)  
-    userTwitterLab2: Label = null;
+    @property(Sprite)  
+    userTwitterCon: Sprite = null;
 
-    @property(Label)  
-    userBagLab2: Label = null;
+    @property(Sprite)  
+    userTwitterDis: Sprite = null;
+
+    @property(Sprite)  
+    userBagCon: Sprite = null;
+
+    @property(Sprite)  
+    userBagDis: Sprite = null;
 
     @property([Label])  
     labArr: Label[] = [];
@@ -234,13 +240,15 @@ export class mainView extends Component {
 
         this.userIdLab.string = "UID:" + gameData.saveData.user_id.toString();
 
-        this.userTwitterLab.string = gameData.isBindTwitter? LanauageManager.truncateString(gameData.bindTwitterName, 10):"" //LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
+        this.userTwitterLab.string = gameData.isBindTwitter? LanauageManager.truncateString(gameData.bindTwitterName, 10, 2):"" //LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
 
-        this.userBagLab.string = gameData.isBindWallet? LanauageManager.truncateString(gameData.bindWalletName, 10):""//LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
+        this.userBagLab.string = gameData.isBindWallet? LanauageManager.truncateString(gameData.bindWalletName, 10, 2):""//LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
 
-        this.userTwitterLab2.string = gameData.isBindTwitter? "-":"+";
+        this.userTwitterCon.node.active = gameData.isBindTwitter?false:true;
+        this.userTwitterDis.node.active = !this.userTwitterCon.node.active;
 
-        this.userBagLab2.string = gameData.isBindWallet? "-":"+";
+        this.userBagCon.node.active = gameData.isBindWallet? false: true;
+        this.userBagDis.node.active = ! this.userBagCon.node.active;
 
         this.offLine.active = gameData.saveData.offline_card_remaining_time > 0;
         if (this.offLine.active){

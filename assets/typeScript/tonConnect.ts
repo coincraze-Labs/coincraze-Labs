@@ -204,7 +204,7 @@ export class tonConnect  extends Component{
         if (type == 1){
             this.onBuyWithStars();
         }else if (type == 2){
-            this.onBuyWithTon(coin);
+            //this.onBuyWithTon(coin);
         }
         else{
             this.openModal();
@@ -230,16 +230,17 @@ export class tonConnect  extends Component{
     private updateConnect() {
         if (this.isConnected()) {
             const address = this._connectUI.account.address;
-            this._cocosGameFi.walletAccount;
             gameData.isBindWallet = true;
-            gameData.cocosGameFi = this._cocosGameFi;
-            gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: true, bounceable: false });
+            gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: false, bounceable: false });
+            HttpClient.getInstance().sendWallet(1);
             //this.connectLabel.string = Address.parseRaw(address).toString({ testOnly: true, bounceable: false }).substring(0, 6) + '...';
         } else {
             //this.connectLabel.string = "Connect";
             gameData.bindWalletName = "";
             gameData.isBindWallet = false;
+            HttpClient.getInstance().sendWallet(2);
         }
+        
         EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME)
        
     }

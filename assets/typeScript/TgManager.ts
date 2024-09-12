@@ -4,6 +4,7 @@ import { HttpClient } from './net/HttpClient';
 import { EventManger } from './EventManger';
 import { LanauageManager } from './LanauageManager';
 import { UIManager } from './UIManager';
+import { TelegramWebApp } from '../cocos-telegram-miniapps/scripts/telegram-web';
 // import { TonTransferRequest } from '../plugin/package/dist/common/game-fi';
 // import { GameFi } from '../plugin/package/dist/cocos/src';
 // import { Address, toNano, TonConnectUI } from '../plugin/package/dist';
@@ -41,6 +42,18 @@ export class TgManager {
         window.open(TgManager.connectTwitterUrl + gameData.saveData.user_id);
 
         HttpClient.getInstance().sendTwiteer(1);
+
+        setTimeout(()=>{
+            HttpClient.getInstance().sendGetTTName();
+        }, 5);  
+
+        setTimeout(()=>{
+            HttpClient.getInstance().sendGetTTName();
+        }, 10);  
+
+        setTimeout(()=>{
+            HttpClient.getInstance().sendGetTTName();
+        }, 30);  
     }
 
     public static disConnectTwitter(isSend:boolean = false){
@@ -109,8 +122,9 @@ export class TgManager {
     public static invite(){
         LanauageManager.playSound();
         let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId //+"&text=Join Coincraze, collecting crypto coins!"
-        window.open(url, '_blank');
+        //window.open(url, '_blank');
 
+        TelegramWebApp.Instance.share(TgManager.shareUrl + gameData.saveData.invitId)
         HttpClient.getInstance().sendDailyinvite();
     }
 

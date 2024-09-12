@@ -52,7 +52,7 @@ export class popupShare extends Component {
         if (this.chall.active){
             this.desLab.string = LanauageManager.getDesStrById(52);
 
-            this.timeLab.string = LanauageManager.getDesStrById(37) + "  " + gameData.getLeftTime(gameData.levelSeconds);
+            this.timeLab.string = LanauageManager.getDesStrById(37) + "  " + gameData.getLeftTime(gameData.levelSeconds, 2);
 
             this.timeLab2.string = gameData.getShowTime();
         }

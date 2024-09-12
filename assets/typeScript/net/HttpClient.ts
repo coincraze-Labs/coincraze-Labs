@@ -120,6 +120,12 @@ export class HttpClient {
                         gameData.saveData.daily_pass_num = data.gameinfo.daily_pass_num;
                     }
 
+                    if (data.gameinfo.tt_name != undefined){
+                        gameData.bindTwitterName = data.gameinfo.tt_name;
+
+                        gameData.isBindTwitter = data.gameinfo.tt_name == "no" ? false: true;
+                    }
+
                 }
 
                 if (data.game){
@@ -158,9 +164,9 @@ export class HttpClient {
 
                     gameData.saveData.isChallenged = LanauageManager.getTaskIsComplete(15);
 
-                    gameData.isBindTwitter = LanauageManager.getTaskIsComplete(3);
+                    //gameData.isBindTwitter = LanauageManager.getTaskIsComplete(3);
 
-                    gameData.isBindWallet = LanauageManager.getTaskIsComplete(1);
+                    //gameData.isBindWallet = LanauageManager.getTaskIsComplete(1);
                 }
 
                 if (data.game_detail){
@@ -375,6 +381,14 @@ export class HttpClient {
         zc.http.post("api/xback", this.onLogin.bind(this), params);
     }
 
+    sendWallet(type:number){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+            "x_type":type,
+        }
+        zc.http.post("api/mback", this.onLogin.bind(this), params);
+    }
+
     sendJoinCommunity(){
         let params = {
             "user_id":gameData.saveData.user_id,
@@ -407,6 +421,13 @@ export class HttpClient {
         if (res.res && res.res.code == "200"){
             EventManger.eventTarget.emit(EventManger.EEventName.OPEN_STAR_BUY, res.res.invoice_link);
         }
+    }
+
+    sendGetTTName(){
+        let params = {
+            "user_id":gameData.saveData.user_id,
+        }
+        zc.http.post("api/ttname", this.onLogin.bind(this), params);
     }
 
 
