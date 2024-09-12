@@ -79,7 +79,7 @@ export class popupBuyItem extends Component {
 
         this.btn3_lab1.string = LanauageManager.getDesStrById(gameData.isBindWallet ? 63: 62 )
         
-        this._bnt1Num = coin*0.9*gameData.saveData.tonPrice;
+        this._bnt1Num = coin*0.9/gameData.saveData.tonPrice;
         this._bnt2Num = coin*0.9;
         this.btn1_lab1.string = LanauageManager.getCoinNumString(coin*0.9/gameData.saveData.tonPrice) + " " + LanauageManager.getDesStrById(105);
         this.btn1_lab2.string = LanauageManager.getCoinNumString(coin/gameData.saveData.tonPrice)  + LanauageManager.getDesStrById(105);
