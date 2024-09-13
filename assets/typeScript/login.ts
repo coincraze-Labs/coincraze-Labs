@@ -69,6 +69,7 @@ export class login extends Component {
         // if (element && element.requestFullscreen) {  
         //     element.requestFullscreen();  
         // }  
+
     }
 
 
@@ -142,11 +143,12 @@ export class login extends Component {
         
         login.instance = this;
         //director.loadScene("game")  
-        resources.preloadDir("ui", ()=>{
-            console.log("preload success")
-            //director.loadScene("game")  
+        // resources.preloadDir("ui", ()=>{
+        //     console.log("preload success")
+        //     //director.loadScene("game")  
             director.preloadScene("game", this.onComplete)
-         })
+        //  })
+         
     }
       
     onComplete() {  

@@ -173,7 +173,7 @@ export class game extends Component {
             gameData.saveData = new SaveData();
         }
         this.loading.active = false;
-        //UIManager.preloadPrefabs();
+        UIManager.preloadPrefabs();
     }
 
     start() {

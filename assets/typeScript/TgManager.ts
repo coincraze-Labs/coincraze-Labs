@@ -45,15 +45,15 @@ export class TgManager {
 
         setTimeout(()=>{
             HttpClient.getInstance().sendGetTTName();
-        }, 5);  
+        }, 5000);  
 
         setTimeout(()=>{
             HttpClient.getInstance().sendGetTTName();
-        }, 10);  
+        }, 10000);  
 
         setTimeout(()=>{
             HttpClient.getInstance().sendGetTTName();
-        }, 30);  
+        }, 30000);  
     }
 
     public static disConnectTwitter(isSend:boolean = false){
@@ -113,15 +113,16 @@ export class TgManager {
         LanauageManager.playSound();
         //EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("shareTelegram"))
 
-        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId // +"&text=Join Coincraze, collecting crypto coins!"
-        let web = window.open(url,'_blank');
+        //let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId // +"&text=Join Coincraze, collecting crypto coins!"
+        //let web = window.open(url,'_blank');
 
+        TelegramWebApp.Instance.share(TgManager.shareUrl + gameData.saveData.invitId)
        // HttpClient.getInstance().sendDailyshare();
     }
 
     public static invite(){
         LanauageManager.playSound();
-        let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId //+"&text=Join Coincraze, collecting crypto coins!"
+        //let url = TgManager.shareUrl0 + TgManager.shareUrl + gameData.saveData.invitId //+"&text=Join Coincraze, collecting crypto coins!"
         //window.open(url, '_blank');
 
         TelegramWebApp.Instance.share(TgManager.shareUrl + gameData.saveData.invitId)

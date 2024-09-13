@@ -1,4 +1,4 @@
-import { director, error, log } from "cc";
+import { director, error, log, sys } from "cc";
 import { zc } from "./ZC";
 import { HttpReturn } from "./ZCHttpRequest";
 import { SaveData, gameData } from "../gameData";
@@ -37,17 +37,20 @@ export class HttpClient {
             "user_id":user_id,
             "first_name":first_name,
             "last_name":last_name, 
-            "shared_id":shared_id
+            "shared_id":shared_id,
+            //"platform":sys.platform,
         }
         if (AndroidSdk.isLocal){
             return;
         }
         this.isInit = true;
         LanauageManager.isInitData = false;
+        console.log("Platform", sys.platform);
         zc.http.post("api/user", this.onLogin.bind(this), params);
     }
 
     onLogin(res:HttpReturn){
+        
         console.log("Login------------", res.res)
         if (res.res && res.res.code == "200"){
             if (res.res.data){

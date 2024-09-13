@@ -28,9 +28,9 @@ export class UIManager {
     };
 
     public static preloadPrefabs() {  
-        //  resources.preloadDir("ui", ()=>{
-        //     console.log("preload success")
-        //  })
+         resources.preloadDir("ui", ()=>{
+            console.log("preload success")
+         })
     }  
 
     private static instances = {};

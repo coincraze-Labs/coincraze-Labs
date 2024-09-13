@@ -77,8 +77,6 @@ export class gameData extends Component {
         return showLevel;
     }
 
-
-
 //------------------------------------------------------------------------------------------------
     public static getInitNum(num:number, num2:number = 100):number{
         return Math.round(num*num2)/num2;

@@ -26,13 +26,17 @@ export class shopView extends Component {
     timeSeconds:number = 1;
 
     private info:any[];
-    onEnable() {
-        this.refresh();
+
+    protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
     }
 
+    onEnable() {
+        this.refresh();
+    }
+
     onDisable() {
-        EventManger.eventTarget.off(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
+        //EventManger.eventTarget.off(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
     }
 
     update(deltaTime: number) {
@@ -50,6 +54,14 @@ export class shopView extends Component {
         this.shopSp.node.active = !gameData.isBackNotShop;
         this.backpackSp.node.active = gameData.isBackNotShop
         this.info = [];
+
+        for (let index = 0; index < this.itemContent.children.length; index++) {
+            let itemshow = this.itemContent.children[index];
+            if(itemshow){
+                itemshow.active = false;
+            }
+        }
+
         if (gameData.isBackNotShop){
             this.info = gameData.saveData.backList;
         }else{
@@ -62,10 +74,6 @@ export class shopView extends Component {
         }
         if (!this.info){
             return;
-        }
-        for (let index = 0; index < this.itemContent.children.length; index++) {
-            let itemshow = this.itemContent.children[index];
-            itemshow.active = false;
         }
 
         for (let index = 0; index < this.info.length; index++) {

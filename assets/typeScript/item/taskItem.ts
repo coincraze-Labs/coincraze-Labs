@@ -149,7 +149,9 @@ export class taskItem extends Component {
         }
         switch (this.taskData.task_type) {
             case 2:
-                TgManager.invite();
+                //TgManager.invite();
+                gameData.isChanllengeShare = false;
+                UIManager.open(UIManager.uiNamePath.popupShare);
                 break;
             case 3:
                 UIManager.close(UIManager.uiNamePath.taskView);
