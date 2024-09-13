@@ -189,7 +189,7 @@ export class popupBuyItem extends Component {
             if (count >= 2) {
                 this.unschedule(callback);
             }
-          fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`,{ mode: 'no-cors'})  
+          fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
         .then(response => {  
             if (!response.ok) {  
                 throw new Error('Network response was not ok');  
