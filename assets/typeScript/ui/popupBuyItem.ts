@@ -147,7 +147,7 @@ export class popupBuyItem extends Component {
             ]
         }
         const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)  
-        const hash = Cell.fromBase64(result.boc).hash().toString("base64");
+        const hash = Cell.fromBase64(result.boc).hash().toString("hex");
         this.txVerify(hash,this._connectUI.account.address.toString())
 
     }
@@ -179,7 +179,7 @@ export class popupBuyItem extends Component {
             ]
         }
         const result = await this._connectUI.sendTransaction(transaction as SendTransactionRequest)
-        const hash = Cell.fromBase64(result.boc).hash().toString("base64");
+        const hash = Cell.fromBase64(result.boc).hash().toString("hex");
         this.txVerify(hash,this._connectUI.account.address.toString())
         }
     }
@@ -189,7 +189,7 @@ export class popupBuyItem extends Component {
             if (count >= 2) {
                 this.unschedule(callback);
             }
-          fetch('https://api.coincraze.ai/api/txVerify',{method: "POST",body:JSON.stringify({hash: hash, address: address})})  
+          fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`,{ mode: 'no-cors'})  
         .then(response => {  
             if (!response.ok) {  
                 throw new Error('Network response was not ok');  
