@@ -20,7 +20,7 @@ export class TgManager {
 
     public static shareUrl0 = "https://t.me/share/url?url=";
 
-    public static shareUrl =  "https://t.me/coin_craze_bot/coincraze?startapp=" //"https://t.me/szxsssBot/coinapp?startapp=";
+    public static shareUrl =  "https://t.me/coincraze_labs_bot/coincraze?startapp=" //"https://t.me/szxsssBot/coinapp?startapp=";
 
     public static channelUrl = "https://t.me/Coincraze_Ann";
 
@@ -35,6 +35,14 @@ export class TgManager {
     public static repostTwitterUrl = "https://x.com/intent/retweet?tweet_id=1563171880046981123";
     // private static _gameFi: GameFi;
     // private static _tonAddressConfig: TonAddressConfig;
+
+    public static userDataInt = {
+        "user_id":"",
+        "first_name":"",
+        "last_name":"",
+        "is_premium":false
+
+    };
 
     public static connectTwitter(){
         LanauageManager.playSound();
@@ -177,7 +185,14 @@ export class TgManager {
             gameData.saveData.user_id = userData.user.id;
             HttpClient.getInstance().sendLogin(userData.user.id, userData.user.first_name, userData.user.last_name, startParam);
 
-            HttpClient.getInstance().sendPremium(userData.user.is_premium ? 1 : 0);
+            setTimeout(() => {
+                HttpClient.getInstance().sendPremium(userData.user.is_premium ? 1 : 0);
+            }, 2000); 
+
+           TgManager.userDataInt.user_id = userData.user.id;
+           TgManager.userDataInt.first_name = userData.user.first_name;
+           TgManager.userDataInt.last_name = userData.user.last_name;
+           TgManager.userDataInt.is_premium = userData.user.is_premium;
         }else{
             HttpClient.getInstance().sendLogin();
 

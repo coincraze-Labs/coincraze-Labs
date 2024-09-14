@@ -132,7 +132,7 @@ export class login extends Component {
         TgManager.processURLParameters();
 
         tween(this.loadPross)
-        .to(30,{progress:0.95}, { easing: 'quadIn' })
+        .to(30,{progress:0.8}, { easing: 'quadIn' })
         // .to(0.1,{progress:0}, { easing: 'quadIn' })
         // .to(8,{progress:1}, { easing: 'quadIn' })
         // .to(0.1,{progress:0}, { easing: 'quadIn' })
@@ -143,31 +143,31 @@ export class login extends Component {
         
         login.instance = this;
         //director.loadScene("game")  
-        // resources.preloadDir("ui", ()=>{
-        //     console.log("preload success")
-        //     //director.loadScene("game")  
+        resources.preloadDir("ui", ()=>{
+            console.log("preload ui success")
+            //director.loadScene("game")  
             director.preloadScene("game", this.onComplete)
-        //  })
+        })
          
     }
       
     onComplete() {  
         console.log("preload game success")
+        LanauageManager.isLoad = true;
         tween( login.instance.loadPross).stop();
         tween( login.instance.loadPross)
-        .to(0.2,{progress:0.98})
-        .call(()=>{
-            console.log("load game success")
-            if (LanauageManager.isInitData){
-                director.loadScene("game")  
-            }else{
-                //login.instance.showTip("Network error, login failed")
-            }
-            LanauageManager.isLoad = true;
-        })
-        .to(0.1,{progress:1})
+        .to(3,{progress:0.8})
+        .to(20,{progress:0.95})
         .to(50,{progress:1})
         .start();
+
+        if (LanauageManager.isInitData){
+            director.loadScene("game", ()=>{
+                console.log("load game success")
+            })  
+        }else{
+            //login.instance.showTip("Network error, login failed")
+        }
     } 
 
     update(deltaTime: number) {

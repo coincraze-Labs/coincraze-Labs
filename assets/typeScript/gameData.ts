@@ -131,7 +131,7 @@ export class gameData extends Component {
         return  `${h1}:${m1}:${s1}`;
     }
 
-    public static getShowTime():string{
+    public static getShowTime(type:number = 1):string{
         let date = new Date();  
    
         let month = (date.getMonth() + 1)
@@ -141,7 +141,9 @@ export class gameData extends Component {
         let h1 = (month < 10) ? '0' + month.toString() : month.toString();  
         let m1 = (day < 10) ? '0' + day.toString() : day.toString();  
         let s1 = (year < 10) ? '0' + year.toString() : year.toString();   
-        
+        if (type == 2){
+            return  `${h1}/${m1}/${s1}`;
+        }
         return `${h1}:${m1}:${s1}`;
     }
 

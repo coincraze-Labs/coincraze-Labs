@@ -231,6 +231,7 @@ export class tonConnect  extends Component{
         if (this.isConnected()) {
             const address = this._connectUI.account.address;
             gameData.isBindWallet = true;
+            gameData.cocosGameFi = this._cocosGameFi;
             gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: false, bounceable: false });
             HttpClient.getInstance().sendWallet(1);
             //this.connectLabel.string = Address.parseRaw(address).toString({ testOnly: true, bounceable: false }).substring(0, 6) + '...';
