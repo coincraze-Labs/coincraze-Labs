@@ -186,7 +186,7 @@ export class popupBuyItem extends Component {
      async txVerify(hash:string,address:string) {
         let count = 0;
         const callback = async function () {
-            if (count >= 2) {
+            if (count >= 10) {
                 this.unschedule(callback);
             }
           fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
