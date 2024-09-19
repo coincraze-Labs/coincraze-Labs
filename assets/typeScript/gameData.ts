@@ -46,6 +46,7 @@ export class gameData extends Component {
 
     public static tonAddressConfig:TonAddressConfig;
      public static cocosGameFi:GameFi = null;
+  
 
     //--------------------task--------------------
 
@@ -59,6 +60,36 @@ export class gameData extends Component {
 
     public static isShowTip = true;
 
+
+    public static popCallback(hash:string,address:string,id,curBuyCount){
+        let count = 0;
+        let intervalId:number;
+        intervalId = setInterval(function(){
+            if(count > 10){
+                clearInterval(intervalId);
+            }
+            fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
+            .then(response => {  
+                if (!response.ok) {  
+                    throw new Error('Network response was not ok');  
+                }  
+                return response.json(); 
+            })  
+            .then(data => {  
+                if(data['success']){
+                    console.log(id, curBuyCount)
+                    HttpClient.getInstance().sendBuyShopItem(id, curBuyCount);
+                    clearInterval(intervalId);
+                }
+            })  
+            .catch(error => {  
+                console.error('There was a problem with your fetch operation:', error);  
+            }); 
+            count++;
+        }, 15000);
+        
+        
+    }
     public static saveDataClick(type:number = 2){
         //HttpClient.getInstance().sendPasLevel(gameData.saveData.addMoney, gameData.saveData.addGold, type);
         gameData.saveData.addGold = 0;
