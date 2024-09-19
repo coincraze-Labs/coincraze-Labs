@@ -133,41 +133,40 @@ export class login extends Component {
 
         tween(this.loadPross)
         .to(30,{progress:0.8}, { easing: 'quadIn' })
-        // .to(0.1,{progress:0}, { easing: 'quadIn' })
-        // .to(8,{progress:1}, { easing: 'quadIn' })
-        // .to(0.1,{progress:0}, { easing: 'quadIn' })
-        // .to(20,{progress:1}, { easing: 'quadIn' })
-        // .to(0.1,{progress:0}, { easing: 'quadIn' })
-        // .to(20,{progress:0.98}, { easing: 'quadIn' })
+        // .to(50,{progress:0.95}, { easing: 'quadIn' })
+        // .to(100,{progress:1}, { easing: 'quadIn' })
         .start();
         
         login.instance = this;
         //director.loadScene("game")  
         resources.preloadDir("ui", ()=>{
             console.log("preload ui success")
-            //director.loadScene("game")  
-            director.preloadScene("game", this.onComplete)
+            if (LanauageManager.isInitData){
+                director.loadScene("game") 
+            }
+            this.onComplete(); 
+            //director.preloadScene("game", this.onComplete)
         })
          
     }
       
     onComplete() {  
-        console.log("preload game success")
+        //console.log("preload game success")
         LanauageManager.isLoad = true;
         tween( login.instance.loadPross).stop();
         tween( login.instance.loadPross)
         .to(3,{progress:0.8})
-        .to(20,{progress:0.95})
-        .to(50,{progress:1})
+        .to(30,{progress:0.95})
+        .to(200,{progress:1})
         .start();
 
-        if (LanauageManager.isInitData){
-            director.loadScene("game", ()=>{
-                console.log("load game success")
-            })  
-        }else{
-            //login.instance.showTip("Network error, login failed")
-        }
+        // if (LanauageManager.isInitData){
+        //     director.loadScene("game", ()=>{
+        //         console.log("load game success")
+        //     })  
+        // }else{
+        //     //login.instance.showTip("Network error, login failed")
+        // }
     } 
 
     update(deltaTime: number) {

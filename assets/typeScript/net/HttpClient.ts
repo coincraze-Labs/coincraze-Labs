@@ -399,9 +399,9 @@ export class HttpClient {
         zc.http.post("api/joincommunity", this.onLogin.bind(this), params);
     }
 
-    sendPremium(premium:Number){
+    sendPremium(premium:Number, userid:number = 0){
         let params = {
-            "user_id":gameData.saveData.user_id,
+            "user_id": userid == 0 ? gameData.saveData.user_id:userid,
             "is_premium":premium,
         }
         zc.http.post("api/premium", this.onsendPremium.bind(this), params);

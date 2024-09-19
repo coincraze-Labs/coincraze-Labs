@@ -29,7 +29,7 @@ export class UIManager {
 
     public static preloadPrefabs() {  
          resources.preloadDir("ui", ()=>{
-            console.log("preload success")
+            console.log("preload ui success")
          })
     }  
 

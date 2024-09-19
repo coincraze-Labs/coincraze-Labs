@@ -9966,21 +9966,11 @@
     },
     "_enabled": true,
     "__prefab": null,
-    "playOnLoad": true,
+    "playOnLoad": false,
     "_clips": [
-      {
-        "__uuid__": "b0a101ea-d1d7-407f-8d3b-452581eb93a7",
-        "__expectedType__": "cc.AnimationClip"
-      },
-      {
-        "__uuid__": "f46fa671-07c5-47bd-8d26-a29e63658c91",
-        "__expectedType__": "cc.AnimationClip"
-      }
+      null
     ],
-    "_defaultClip": {
-      "__uuid__": "f46fa671-07c5-47bd-8d26-a29e63658c91",
-      "__expectedType__": "cc.AnimationClip"
-    },
+    "_defaultClip": null,
     "_id": "60CKT0z91JEawa382VtXux"
   },
   {
@@ -19251,6 +19241,9 @@
     },
     "boostLab": {
       "__id__": 281
+    },
+    "anim": {
+      "__id__": 260
     },
     "_id": "2bYStnKPZEMJ4fHQQCs7Iy"
   },

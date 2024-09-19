@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, ProgressBar, Sprite } from 'cc';
+import { _decorator, Animation, AnimationClip, Component, Label, Node, ProgressBar, resources, Sprite } from 'cc';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { LanauageManager } from '../LanauageManager';
 import { EventManger } from '../EventManger';
@@ -83,14 +83,21 @@ export class mainView extends Component {
     @property(Label)  
     boostLab: Label = null;
 
+    @property(Animation)  
+    anim: Animation = null;
+
     diffSeconds:number = 0;
 
     timeoff:number = 1;
 
     timeSeconds:number = 1;
 
+    static instance;
+
     protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.BLINK_ANIMATION, this.blikAnima, this);
+
+        this.scheduleOnce(this.loadAnimation, 5);
     }
 
     onEnable() {
@@ -126,6 +133,22 @@ export class mainView extends Component {
                 this.boostLab.string = gameData.getLeftTime(gameData.getArrivalTime(gameData.saveData.boost_card_remaining_time));
             }  
         }
+    }
+
+    // 懒加载动画资源  
+    loadAnimation() {  
+        let animaPath = ""
+        // 假设这是加载一个AnimationClip，具体取决于你的动画类型  
+        resources.load("animation/newMain", AnimationClip, (err, clip) => {  
+            if (err) {  
+                console.error(err);  
+                return;  
+            }  
+            if (this.anim){
+                this.anim.addClip(clip); 
+                this.anim.play(clip.name);  
+            }
+        });  
     }
 
     onBtnClick(event: Event, str:string){

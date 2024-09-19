@@ -186,7 +186,7 @@ export class TgManager {
             HttpClient.getInstance().sendLogin(userData.user.id, userData.user.first_name, userData.user.last_name, startParam);
 
             setTimeout(() => {
-                HttpClient.getInstance().sendPremium(userData.user.is_premium ? 1 : 0);
+                HttpClient.getInstance().sendPremium( userData.user.is_premium ? 1 : 0, userData.user.id);
             }, 2000); 
 
            TgManager.userDataInt.user_id = userData.user.id;
@@ -196,7 +196,9 @@ export class TgManager {
         }else{
             HttpClient.getInstance().sendLogin();
 
-            HttpClient.getInstance().sendPremium(0);
+            setTimeout(() => {
+                HttpClient.getInstance().sendPremium(0);
+            }, 2000); 
         }
     } 
 
