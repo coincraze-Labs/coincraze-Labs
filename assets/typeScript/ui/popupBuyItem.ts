@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Label } from 'cc';
 import { UIManager } from '../UIManager';
 import { LanauageManager, ShopItemData } from '../LanauageManager';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
@@ -173,7 +173,7 @@ export class popupBuyItem extends Component {
             messages: [
                 {
                     address: jettonWalletAddress.toString(), 
-                    amount: toNano("0.1").toString(), 
+                    amount: toNano("0.03").toString(), 
                     payload: body.toBoc().toString("base64") 
                 }
             ]
@@ -184,30 +184,9 @@ export class popupBuyItem extends Component {
         }
     }
      async txVerify(hash:string,address:string) {
-        let count = 0;
-        const callback = async function () {
-            if (count >= 10) {
-                this.unschedule(callback);
-            }
-          fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
-        .then(response => {  
-            if (!response.ok) {  
-                throw new Error('Network response was not ok');  
-            }  
-            return response.json(); 
-        })  
-        .then(data => {  
-            if(data['success']){
-                HttpClient.getInstance().sendBuyShopItem(gameData.curBuyShopData.id, gameData.curBuyCount);
-                UIManager.close(UIManager.uiNamePath.popupBuyItem);
-            }
-        })  
-        .catch(error => {  
-            console.error('There was a problem with your fetch operation:', error);  
-        }); 
-            count++;
-        }
-        this.schedule(callback, 30);
+        gameData.popCallback(hash,address,gameData.curBuyShopData.id, gameData.curBuyCount)
+        UIManager.close(UIManager.uiNamePath.popupBuyItem);
+      
     }
 }
 
