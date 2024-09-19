@@ -65,7 +65,7 @@ export class gameData extends Component {
         let count = 0;
         let intervalId:number;
         intervalId = setInterval(function(){
-            if(count > 10){
+            if(count > 20){
                 clearInterval(intervalId);
             }
             fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
