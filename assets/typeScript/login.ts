@@ -142,12 +142,16 @@ export class login extends Component {
         resources.preloadDir("ui", ()=>{
             console.log("preload ui success")
             if (LanauageManager.isInitData){
-                director.loadScene("game") 
+                director.loadScene("game", this.onComplete2) 
             }
             this.onComplete(); 
             //director.preloadScene("game", this.onComplete)
         })
          
+    }
+
+    onComplete2() {  
+        console.log("preload game success")
     }
       
     onComplete() {  

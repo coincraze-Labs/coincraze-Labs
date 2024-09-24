@@ -38,12 +38,12 @@ export class shopItem extends Component {
 
     refresh(data:any){
 
+        this.isBackPack = gameData.isBackNotShop;
         this.itemData = data;
         if (!this.itemData){
+            this.node.active = false;
             return;
         }
-
-        this.isBackPack = gameData.isBackNotShop;
 
         this.numNode.active = !this.isBackPack;
         this.coinSp.node.active = !this.isBackPack;
@@ -81,12 +81,18 @@ export class shopItem extends Component {
     }
 
     onAddBtnClick(){
+        if (this.isBackPack){
+            return;
+        }
         LanauageManager.playSound();
         this.buyNum++;
         this.refreshShop();
     }
 
     onSubBtnClick(){
+        if (this.isBackPack){
+            return;
+        }
         LanauageManager.playSound();
         this.buyNum--;
         if (this.buyNum <= 0){

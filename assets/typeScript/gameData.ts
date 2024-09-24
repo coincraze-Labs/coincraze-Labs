@@ -440,4 +440,15 @@ export class SaveData  {
     up_coin_out:number = 0;
 
     up_coin_in:number = 0;
+
+    //----------------------------------------------------------------
+
+    clear_level1:number = 10;
+
+    clear_level2:number = 70;
+
+    clear_money:number = 6.9;
+
+    clear_isBuy:boolean = false;
+
 }

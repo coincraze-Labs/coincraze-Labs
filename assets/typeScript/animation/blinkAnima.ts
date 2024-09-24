@@ -77,13 +77,20 @@ export class blinkAnima extends Component {
         this.animation.start();
     }
 
-    protected onDisable(): void {
+    public stopAnima(){
+        if (this.target){
+            this.target.opacity = 255;
+        }
         if (this.animation) {  
             this.animation.stop();   
         }  
         if (this.animationForever) {  
             this.animationForever.stop();   
-        }  
+        }
+    }
+
+    protected onDisable(): void {
+        this.stopAnima();
     }
 }
 

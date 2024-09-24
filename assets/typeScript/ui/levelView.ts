@@ -63,7 +63,7 @@ export class levelView extends Component {
     protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.BLINK_ANIMATION, this.blikAnima, this);
 
-        EventManger.eventTarget.on(EventManger.EEventName.ADD_COINANDEXP, this.upAnimation, this);
+        //EventManger.eventTarget.on(EventManger.EEventName.ADD_COINANDEXP, this.upAnimation, this);
 
         this.moneyPosY = this.expyAni.position.y;
         

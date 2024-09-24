@@ -122,10 +122,12 @@ export class popupBuyItem extends Component {
 
     onBtn3Click(){
         LanauageManager.playSound();
-        let coin = Math.floor(this.itemData.coin_num * this.buyNum * 71);
-        //EventManger.eventTarget.emit(EventManger.EEventName.OPEN_TON_CONNNECT, 1, coin);
 
+        let coin = Math.floor(this.itemData.coin_num * this.buyNum * 71);
         HttpClient.getInstance().sendGetinvoiceLink(LanauageManager.getDesStrById(this.itemData.name_id), coin)
+
+        // HttpClient.getInstance().sendBuyShopItem(gameData.curBuyShopData.id, 1);
+        // UIManager.close(UIManager.uiNamePath.popupBuyItem);
     }
   async  getUserWalletAddress(userAddress, jettonMasterAddress) {
        

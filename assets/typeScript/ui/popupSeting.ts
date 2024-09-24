@@ -77,8 +77,17 @@ export class popupSeting extends Component {
         this.refresh();
     }
 
-    onOpenVisit(){
-        TgManager.visitWebsite();
+    onOpenVisit(event:Event, str:string){
+        if (str == "comBtn"){
+            window.open("https://t.me/Coincraze_Ann");
+        }else if (str == "aboutUs"){
+            //window.open("https://www.coincraze.ai/");
+            TgManager.visitWebsite();
+        }
+        else if (str == "support"){
+            window.open("https://t.me/Coincraze_support");
+        }
+        
     }
 
     onCloseClick(){

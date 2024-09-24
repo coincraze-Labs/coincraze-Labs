@@ -78,6 +78,9 @@ export class shopView extends Component {
 
         for (let index = 0; index < this.info.length; index++) {
             let itemData = this.info[index];
+            if (!itemData){
+                continue;
+            }
             let item;
             if (this.itemContent.children && this.itemContent.children[index]){
                 item = this.itemContent.children[index];
@@ -87,12 +90,13 @@ export class shopView extends Component {
             }
             item.active = true;
             if (gameData.isBackNotShop){
+
                 itemData = LanauageManager.getShopItemData(itemData.id)
+
                 item.getComponent('shopItem')?.refresh(itemData);
             }else{
                 item.getComponent('shopItem')?.refresh(itemData);
             }
-            
         }
     }
 

@@ -1,4 +1,4 @@
-import { _decorator, Animation, AnimationClip, Component, Label, Node, ProgressBar, resources, Sprite } from 'cc';
+import { _decorator, Animation, AnimationClip, Color, color, Component, Label, Node, ProgressBar, resources, Sprite } from 'cc';
 import { gameData, popupCommonType, popupLabType } from '../gameData';
 import { LanauageManager } from '../LanauageManager';
 import { EventManger } from '../EventManger';
@@ -85,6 +85,18 @@ export class mainView extends Component {
 
     @property(Animation)  
     anim: Animation = null;
+
+    @property(Node)  
+    clearBtn: Node = null;
+
+    @property(blinkAnima)  
+    clearUnLock: blinkAnima = null;
+
+    @property(Sprite)  
+    clearLock: Sprite = null;
+
+    @property(Label)  
+    clearBtnLab: Label = null;
 
     diffSeconds:number = 0;
 
@@ -237,10 +249,31 @@ export class mainView extends Component {
         else if (str == "copyUserId"){
             LanauageManager.copyText(gameData.saveData.user_id.toString());
         }
+        else if (str == "clearBtn"){
+            //LanauageManager.copyText(gameData.saveData.user_id.toString());
+            if (gameData.saveData.userLevel < gameData.saveData.clear_level1){
+                EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(135))
+            }
+            else if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy){
+                UIManager.open(UIManager.uiNamePath.popupClear2);
+            }else{
+                UIManager.open(UIManager.uiNamePath.popupClear1);
+            }
+        }
     }
 
     public refresh(){
-
+        //this.clearUnLock.node.active = false;
+        this.clearLock.node.active = false;
+        this.clearBtnLab.string = LanauageManager.getDesStrById(134);
+        if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy){
+            this.clearUnLock.stopAnima();
+            this.clearBtnLab.color = new Color("#F0F060")
+        }else{
+            this.clearLock.node.active = true;
+            this.clearBtnLab.color = new Color("#FFFFFF")
+        }
+        
         this.levelPross.progress = gameData.saveData.expNum / gameData.getExpSum();
 
         this.levelLab.string = gameData.saveData.userLevel.toString();

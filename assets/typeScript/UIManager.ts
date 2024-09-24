@@ -20,6 +20,8 @@ export class UIManager {
         levelUp: "levelUp",
         rankView: "rankView",
         taskView: "taskView",
+        popupClear1: "popupClear1",
+        popupClear2: "popupClear2",
     }
 
      public static EEventName = {

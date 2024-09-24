@@ -46,6 +46,7 @@ export class HttpClient {
         this.isInit = true;
         LanauageManager.isInitData = false;
         console.log("Platform", sys.platform);
+        //TgManager.downloadTextFile("Platform", sys.platform);
         zc.http.post("api/user", this.onLogin.bind(this), params);
     }
 
@@ -127,6 +128,18 @@ export class HttpClient {
                         gameData.bindTwitterName = data.gameinfo.tt_name;
 
                         gameData.isBindTwitter = data.gameinfo.tt_name == "no" ? false: true;
+                    }
+                    if (data.gameinfo.sweep_status != undefined){
+                        gameData.saveData.clear_isBuy = data.gameinfo.sweep_status == 1
+                    }
+                    if (data.gameinfo.sweep_price != undefined){
+                        gameData.saveData.clear_money = data.gameinfo.sweep_price;
+                    }
+                    if (data.gameinfo.sweep_N != undefined){
+                        gameData.saveData.clear_level1 = data.gameinfo.sweep_N
+                    }
+                    if (data.gameinfo.sweep_M != undefined){
+                        gameData.saveData.clear_level2 = data.gameinfo.sweep_M
                     }
 
                 }
@@ -384,10 +397,11 @@ export class HttpClient {
         zc.http.post("api/xback", this.onLogin.bind(this), params);
     }
 
-    sendWallet(type:number){
+    sendWallet(type:number, address:string = ""){
         let params = {
             "user_id":gameData.saveData.user_id,
             "x_type":type,
+            "wallet addr":address,
         }
         zc.http.post("api/mback", this.onLogin.bind(this), params);
     }

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Prefab, instantiate, input, Input, EventTouch, UITransform, Vec3 , Vec2, Color, Sprite, tween, Label, AudioSource, AudioClip, sys, NodePool, random, randomRange, randomRangeInt, Size, EditBox, native, Button, Animation} from 'cc';
+import { _decorator, Component, Node, Prefab, instantiate, input, Input, EventTouch, UITransform, Vec3 , Vec2, Color, Sprite, tween, Label, AudioSource, AudioClip, sys, NodePool, random, randomRange, randomRangeInt, Size, EditBox, native, Button, Animation, resources, AnimationClip} from 'cc';
 import { block } from './block';
 import { gameData, getPanelType, moneyType, popupCommonType, SaveData } from './gameData';
 import { WECHAT } from 'cc/env';
@@ -127,6 +127,22 @@ export class game extends Component {
     @property({type:Animation})
     passAni:Animation = null;
 
+    @property(Node)
+    expyAni:Node = null;
+
+    @property(Label)
+    expyAniLab:Label = null;
+
+    @property(Node)
+    goldAni:Node = null;
+
+    @property(Label)
+    goldAniLab:Label = null;
+
+    moneyPosY:number = 0
+
+    goldPosY:number = 0
+
     numTouchStart: number;
     numTouchEnd: number;
     gameData: gameData;
@@ -173,7 +189,12 @@ export class game extends Component {
             gameData.saveData = new SaveData();
         }
         this.loading.active = false;
-        UIManager.preloadPrefabs();
+        //UIManager.preloadPrefabs();
+
+        this.moneyPosY = this.expyAni.position.y;
+        
+        this.goldPosY = this.goldAni.position.y;
+
     }
 
     start() {
@@ -216,6 +237,8 @@ export class game extends Component {
         this.schedule(this.updateCoinTime, 1);  
         this.init()
 
+        this.playMusic(0);
+
         if(AndroidSdk.isTempTest && AndroidSdk.isAndroid){
             this.namePanel.active = true;
         }
@@ -230,6 +253,7 @@ export class game extends Component {
         EventManger.eventTarget.on(EventManger.EEventName.MUSIC_CHANGE_STATE, this.changetMusic, this);
         EventManger.eventTarget.on(EventManger.EEventName.USE_ITEM_SURE, this.useItemSureSuccess, this);
         EventManger.eventTarget.on(EventManger.EEventName.LOADING_IS_SHOW, this.isLoadingShow, this);
+        EventManger.eventTarget.on(EventManger.EEventName.ADD_COINANDEXP, this.upAnimation, this);
         
 
         EventManger.eventTarget.on(EventManger.EEventName.SHOW_GOLDOUT_TIP, this.openGoldOutTip, this);
@@ -240,6 +264,60 @@ export class game extends Component {
         EventManger.eventTarget.on(EventManger.EEventName.IS_SHOW_MAINVIEW, this.isShowMainView, this);
 
         this.passAni.on(Animation.EventType.FINISHED, this.passAniFinish, this);
+
+        this.initData()
+        console.log("start")
+    }
+
+    private initData(){
+        this.scheduleOnce(()=>{
+            this.loadMusic();
+        },1);
+
+        this.scheduleOnce(()=>{
+            this.node.addComponent(tonConnect).init();
+        },3);
+
+        this.scheduleOnce(()=>{
+            this.loadAnimation();
+        },7);
+    }
+
+    loadAnimation() {  
+        resources.load("animation/overAni", AnimationClip, (err, clip) => {  
+            if (err) {  
+                console.error(err);  
+                return;  
+            }  
+            if (this.passAni){
+                this.passAni.addClip(clip); 
+            }
+        }); 
+    }
+
+    loadMusic(){
+        resources.load("sound/music_bg", AudioClip, (err, audioClip) => {  
+            if (err) {   
+                console.error(err);  
+                return;  
+            }  
+            this.arrMusic[0] = audioClip;
+            this.playMainMusic();
+        }); 
+        resources.load("sound/music_commonLevel", AudioClip, (err, audioClip) => {  
+            if (err) {   
+                console.error(err);  
+                return;  
+            }  
+            this.arrMusic[1] = audioClip;
+        }); 
+        resources.load("sound/music_challenge", AudioClip, (err, audioClip) => {  
+            if (err) {  
+                console.error(err);  
+                return;  
+            }  
+            this.arrMusic[2] = audioClip;
+        }); 
     }
 
     private isLoadingShow(isShow:boolean){
@@ -269,7 +347,10 @@ export class game extends Component {
                 this.beginGame();
             }
         }
+        this.playMainMusic();
+    }
 
+    public playMainMusic(){
         if (this.mainView.active){
             this.playMusic(0);
             this.mainView.getComponent(mainView)?.refresh();
@@ -1514,6 +1595,30 @@ export class game extends Component {
         this.useArrNumDJ = [0,0,0];
         this.xiaochuNum = 0;
 
+    }
+
+    upAnimation(addCoin:number, addExp:number){
+        this.expyAni.position.set( this.expyAni.position.x, this.moneyPosY, this.expyAni.position.z)
+        this.goldAni.position.set( this.goldAni.position.x, this.goldPosY, this.goldAni.position.z)
+        if (addCoin > 0){
+            this.goldAniLab.string = "+" + addCoin;
+            this.upAnimationByNode(this.goldAni);
+        }
+        if (addExp > 0){
+            this.expyAniLab.string = "+" + addExp;
+            this.upAnimationByNode(this.expyAni);
+        }
+    }
+
+    upAnimationByNode(node:Node){
+        node.active = true;
+        tween(node)
+            .to(1, {position: new Vec3(node.position.x, node.position.y + 80 , 0)})
+            .call(() => {
+                node.active = false;
+            })
+            .start()
+        
     }
 }
 

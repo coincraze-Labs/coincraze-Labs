@@ -10,7 +10,7 @@ import { UIManager } from './UIManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('tonConnect')
-export class tonConnect  extends Component{
+export class tonConnect extends Component{
     @property(Label)
     connectLabel:Label = null;
 
@@ -19,7 +19,7 @@ export class tonConnect  extends Component{
     private _cocosGameFi: GameFi;
     private _connectUI: WalletConnector;
 
-    protected start(): void {
+    public init(): void {
         TelegramWebApp.Instance.init().then(res => {
             console.log("telegram web app init : ", res.success);
         });
@@ -65,11 +65,11 @@ export class tonConnect  extends Component{
         // }); 
 
         let uiconnector = new TonConnectUI({
+
             //manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json',
             manifestUrl: "https://www.coincraze.ai/tonconnect-manifest.json",
             walletsListConfiguration: {
-                includeWallets: [ 
-                    
+                includeWallets: [   
                 {"name":"Wallet","appName":"telegram-wallet","imageUrl":"https://wallet.tg/images/logo-288.png","aboutUrl":"https://wallet.tg/","platforms":["ios","android","macos","windows","linux"],"bridgeUrl":"https://bridge.ton.space/bridge","universalLink":"https://t.me/wallet?attach=wallet&mode=compact"},
                 {"name":"Tonkeeper","appName":"tonkeeper","imageUrl":"https://tonkeeper.com/assets/tonconnect-icon.png","aboutUrl":"https://tonkeeper.com","tondns":"tonkeeper.ton","platforms":["ios","android","chrome","firefox","macos"],"bridgeUrl":"https://bridge.tonapi.io/bridge","universalLink":"https://app.tonkeeper.com/ton-connect","deepLink":"tonkeeper-tc://","jsBridgeKey":"tonkeeper",},
                 {"name":"MyTonWallet","appName":"mytonwallet","imageUrl":"https://static.mytonwallet.io/icon-256.png","aboutUrl":"https://mytonwallet.io","platforms":["chrome","windows","macos","linux","ios","android","firefox"],"jsBridgeKey":"mytonwallet","bridgeUrl":"https://tonconnectbridge.mytonwallet.org/bridge/","universalLink":"https://connect.mytonwallet.org"},
@@ -143,10 +143,10 @@ export class tonConnect  extends Component{
             this._connectUI.openModal();
         }
 
+
+
         const walletsList = await this._connectUI.getWallets();
-
         //TgManager.downloadTextFile("wallets", JSON.stringify(walletsList));
-
         console.log("walleteList: ", walletsList);
     }
 
@@ -156,7 +156,7 @@ export class tonConnect  extends Component{
             gameData.isBindWallet = true;
             gameData.cocosGameFi = this._cocosGameFi;
             gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: false, bounceable: false });
-            HttpClient.getInstance().sendWallet(1);
+            HttpClient.getInstance().sendWallet(1,  gameData.bindWalletName);
             //this.connectLabel.string = Address.parseRaw(address).toString({ testOnly: true, bounceable: false }).substring(0, 6) + '...';
         } else {
             //this.connectLabel.string = "Connect";
