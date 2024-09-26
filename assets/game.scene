@@ -7008,6 +7008,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "05pkf+Iw5ESaKe2DRUJtkw"
   },
   {
@@ -7208,6 +7209,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "c5HLSr+K1P8KLAoFTovXGn"
   },
   {
@@ -7857,6 +7859,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "137WdLq95JwbsNC6ZtOShj"
   },
   {
@@ -8559,6 +8562,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "59Ci6QfhtI6KAErmOfpdTc"
   },
   {
@@ -8785,7 +8789,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 123,
+      "x": 39.89,
       "y": 0,
       "z": 0
     },
@@ -8824,12 +8828,12 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 150,
+      "width": 90.09765625,
       "height": 50.4
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": "357g+7HZdH9KWAtYGdzWYg"
@@ -8854,15 +8858,15 @@
       "b": 255,
       "a": 255
     },
-    "_string": "+10",
+    "_string": "+100",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 40,
     "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 1,
-    "_enableWrapText": true,
+    "_overflow": 0,
+    "_enableWrapText": false,
     "_font": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
@@ -9069,7 +9073,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 84.814453125,
+      "width": 112.6220703125,
       "height": 63
     },
     "_anchorPoint": {
@@ -9099,7 +9103,7 @@
       "b": 38,
       "a": 255
     },
-    "_string": "+10",
+    "_string": "+100",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 50,
@@ -12229,6 +12233,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "31C4tyqkdPo6SqHQIqt7e0"
   },
   {
@@ -12635,6 +12640,7 @@
     "__prefab": null,
     "isForever": true,
     "type": 1,
+    "duration": 0.8,
     "_id": "3cSiZLq0hLkrLYP18gBMtj"
   },
   {
@@ -12976,6 +12982,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "45i6iG1AFHf6XFHRwAosTE"
   },
   {
@@ -13355,6 +13362,7 @@
     "__prefab": null,
     "isForever": false,
     "type": 1,
+    "duration": 0.8,
     "_id": "92wyeZ/U9FI4S8sVR6n8iA"
   },
   {
@@ -18731,6 +18739,7 @@
     "__prefab": null,
     "isForever": true,
     "type": 1,
+    "duration": 2,
     "_id": "88dfbMpGFK7LzYQLaZeSg5"
   },
   {

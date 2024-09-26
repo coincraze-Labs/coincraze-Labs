@@ -38,6 +38,8 @@ export class rankItem extends Component {
 
     private rankDes:number[] = [28, 80, 81];
 
+    private headAvatar:string;
+
     protected onEnable(): void {
         
     }
@@ -52,7 +54,10 @@ export class rankItem extends Component {
 
         this.rangeData = data;
 
-        gameData.replaceHead(this.head, data.avatar);
+        if (this.headAvatar != data.avatar){
+            gameData.replaceHead(this.head, data.avatar);
+        }
+        this.headAvatar = data.avatar;
 
         if (rank <= 3 && rank >=1){
             this.rankLab.string = "";

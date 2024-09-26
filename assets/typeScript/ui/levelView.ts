@@ -103,7 +103,7 @@ export class levelView extends Component {
 
         this.coinLab.string = LanauageManager.getCoinNumString(gameData.saveData.coin);
 
-        this.stageLab.string = LanauageManager.getDesStrById(31) + gameData.getShowLevel();
+        this.stageLab.string = LanauageManager.getDesStrById(31) + " " + gameData.getShowLevel();
 
         // this.chall.active = !gameData.saveData.isChallenged;
 

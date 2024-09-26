@@ -1,7 +1,7 @@
 import { _decorator, assetManager, Component, game, ImageAsset, Node, Sprite, SpriteFrame, Texture2D } from 'cc';
 import { HttpClient } from './net/HttpClient';
 import { randItemData, ShopItemData } from './LanauageManager';
-import { TonAddressConfig } from './TgManager';
+import { TgManager, TonAddressConfig } from './TgManager';
 import { GameFi } from '@ton/cocos-sdk';
 const { ccclass, property } = _decorator;
 
@@ -64,8 +64,11 @@ export class gameData extends Component {
     public static popCallback(hash:string,address:string,id,curBuyCount){
         let count = 0;
         let intervalId:number;
+        if (gameData.saveData.user_id == 7291599119){
+            TgManager.downloadTextFile("hash", hash + "     " + address);
+        }
         intervalId = setInterval(function(){
-            if(count > 20){
+            if(count > 40){
                 clearInterval(intervalId);
             }
             fetch(`https://api.coincraze.ai/api/txVerify?hash=${hash}&address=${address}`)  
@@ -76,6 +79,9 @@ export class gameData extends Component {
                 return response.json(); 
             })  
             .then(data => {  
+                if (gameData.saveData.user_id == 7291599119){
+                    TgManager.downloadTextFile("data", data);
+                }
                 if(data['success']){
                     console.log(id, curBuyCount)
                     HttpClient.getInstance().sendBuyShopItem(id, curBuyCount);
@@ -111,6 +117,10 @@ export class gameData extends Component {
 //------------------------------------------------------------------------------------------------
     public static getInitNum(num:number, num2:number = 100):number{
         return Math.round(num*num2)/num2;
+    }
+
+    public static getCurTime(){
+        return this.date.getTime()/1000;
     }
 
     public static getArrivalTime(time:number){
@@ -178,12 +188,24 @@ export class gameData extends Component {
         return `${h1}:${m1}:${s1}`;
     }
 
+    private static headList:{} = {};
+    private static headLoadList:{} = {};
+
     public static replaceHead(sp:Sprite, remoteUrl:string){
         if (remoteUrl == undefined || remoteUrl == null){
             return;
         }
+        if (gameData.headList[remoteUrl]){
+            sp.spriteFrame = gameData.headList[remoteUrl];
+            return;
+        }
+        if (gameData.headLoadList[remoteUrl]){
+            return;
+        }
+        gameData.headLoadList[remoteUrl] = true; 
         assetManager.loadRemote<ImageAsset>(remoteUrl, function (err, imageAsset) {
             if (err){
+                gameData.headLoadList[remoteUrl] = false; 
                 console.log("加载失败" + err);
                 return;
             }
@@ -192,6 +214,8 @@ export class gameData extends Component {
             texture.image = imageAsset;
             spriteFrame.texture = texture;
             sp.spriteFrame = spriteFrame;
+
+            gameData.headList[remoteUrl] = spriteFrame;
         });
     }
 
@@ -409,9 +433,9 @@ export class SaveData  {
 
     //-----------------------rank---------------------------------------------
 
-    rankList:randItemData[] = [];
+    rankList:any[] = [];
 
-    selfRank:randItemData;
+    selfRank:randItemData[] = [];
 
     allPlayNum:number = 0;
 
@@ -420,6 +444,8 @@ export class SaveData  {
     inviteNum:number = 0;
 
     daily_pass_num:number = 0;
+
+    inviteNumFoever:number = 0;
 
     //------------------------------------------------------------
 

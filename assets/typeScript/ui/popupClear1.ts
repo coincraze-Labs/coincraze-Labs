@@ -50,8 +50,9 @@ export class popupClear1 extends Component {
         //UIManager.close(this.node);
         let itemData = new ShopItemData();
         itemData.id = 999;
-        itemData.coin_num = 6.9;
+        itemData.coin_num = gameData.saveData.clear_money;
         itemData.coin_type = 1;
+        itemData.name_id = 134;
 
         gameData.curBuyShopData = itemData;
         gameData.curBuyCount = 1;

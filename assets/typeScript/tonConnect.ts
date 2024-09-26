@@ -19,10 +19,8 @@ export class tonConnect extends Component{
     private _cocosGameFi: GameFi;
     private _connectUI: WalletConnector;
 
+
     public init(): void {
-        TelegramWebApp.Instance.init().then(res => {
-            console.log("telegram web app init : ", res.success);
-        });
 
         fetch("https://tg-cc.image-bot.com/config", { method: 'GET' }).then(response => {
             return response.json();

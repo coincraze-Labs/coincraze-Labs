@@ -10,6 +10,7 @@ export class blinkAnima extends Component {
     @property(Number)
     type:Number = 1;
 
+    @property(Number)
     duration: number = 0.8;
 
     target:UIOpacity;

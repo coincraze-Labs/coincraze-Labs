@@ -16,6 +16,8 @@ export class HttpClient {
 
     private isShowTip:boolean = true;
 
+    private rankTime:number[] = [0,0,0,0];
+
     public static getInstance():HttpClient {
         if(this.instance == null) {
             this.instance = new HttpClient();
@@ -140,6 +142,10 @@ export class HttpClient {
                     }
                     if (data.gameinfo.sweep_M != undefined){
                         gameData.saveData.clear_level2 = data.gameinfo.sweep_M
+                    }
+
+                    if (data.gameinfo.share_rank_num != undefined){
+                        gameData.saveData.inviteNumFoever = data.gameinfo.share_rank_num;
                     }
 
                 }
@@ -317,19 +323,24 @@ export class HttpClient {
             "user_id":gameData.saveData.user_id,
             "type":type
         }
+        // let time = new Date().getTime()/1000;
+        // if (this.rankTime[type] + 10 > time ){
+        //     return;
+        // }
+        // this.rankTime[type] = time;
         zc.http.post("api/ranking", this.onRankData.bind(this), params);
     }
 
     onRankData(res:HttpReturn){
         if (res.res && res.res.code == "200"){
             if (res.res.self_rank){
-                gameData.saveData.selfRank = res.res.self_rank;
+                gameData.saveData.selfRank[res.res.rank_type] = res.res.self_rank;
             }
             if (res.res.count){
                 gameData.saveData.allPlayNum = res.res.count;
             }
             if (res.res.all_rank){
-                gameData.saveData.rankList = res.res.all_rank;
+                gameData.saveData.rankList[res.res.rank_type] = res.res.all_rank;
             }
             this.refreshView();
         }else{
@@ -401,7 +412,7 @@ export class HttpClient {
         let params = {
             "user_id":gameData.saveData.user_id,
             "x_type":type,
-            "wallet addr":address,
+            "wallet_addr":address,
         }
         zc.http.post("api/mback", this.onLogin.bind(this), params);
     }

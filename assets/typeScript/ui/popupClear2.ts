@@ -15,6 +15,9 @@ export class popupClear2 extends Component {
     @property(Label)  
     yesLab: Label = null;
 
+    @property(Label)  
+    stageLab: Label = null;
+
     @property(Prefab)  
     itemPfb: Prefab = null;
 
@@ -31,6 +34,8 @@ export class popupClear2 extends Component {
     refresh(){
 
         this.isCommon = true;
+
+        this.stageLab.string = (gameData.saveData.curLevel-1).toString();
 
         if (this.isCommon){
             this.yesLab.string = LanauageManager.getDesStrById(139);
@@ -74,6 +79,7 @@ export class popupClear2 extends Component {
     }
 
     onYesClick(){
+        LanauageManager.playSound();
         if (gameData.saveData.hpNum <= 0){
             EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(71))
             return;
@@ -82,6 +88,7 @@ export class popupClear2 extends Component {
     }
 
     onNoClick(){
+        LanauageManager.playSound();
         UIManager.close(this.node);
     }
 

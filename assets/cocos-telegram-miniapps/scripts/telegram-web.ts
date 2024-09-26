@@ -70,10 +70,19 @@ export class TelegramWebApp {
         this._tgWebAppJS = await tgLoadPromise;
 
         if (this._tgWebAppJS) {
+            this.expand();
             return Promise.resolve({ success: true });
         } else {
             return Promise.resolve({ success: false });
         }
+    }
+
+    public expand(){
+        if (!this._tgWebAppJS) {
+            console.error("telegram web app is not inited!");
+            return;
+        }
+        this._tgWebAppJS.expand();
     }
 
     public openTelegramLink(url: string) {
@@ -144,6 +153,8 @@ export class TelegramWebApp {
     public alert(message: string) {
         this._tgWebAppJS.showAlert(message);
     }
+
+    //public 
 }
 
 

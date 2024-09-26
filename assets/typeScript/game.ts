@@ -276,7 +276,7 @@ export class game extends Component {
 
         this.scheduleOnce(()=>{
             this.node.addComponent(tonConnect).init();
-        },3);
+        },2);
 
         this.scheduleOnce(()=>{
             this.loadAnimation();
@@ -1601,7 +1601,7 @@ export class game extends Component {
         this.expyAni.position.set( this.expyAni.position.x, this.moneyPosY, this.expyAni.position.z)
         this.goldAni.position.set( this.goldAni.position.x, this.goldPosY, this.goldAni.position.z)
         if (addCoin > 0){
-            this.goldAniLab.string = "+" + addCoin;
+            this.goldAniLab.string = "+" + LanauageManager.getCoinNumString(addCoin);
             this.upAnimationByNode(this.goldAni);
         }
         if (addExp > 0){

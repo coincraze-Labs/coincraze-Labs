@@ -70,6 +70,10 @@ export class login extends Component {
         //     element.requestFullscreen();  
         // }  
 
+        TelegramWebApp.Instance.init().then(res => {
+            console.log("telegram web app init : ", res.success);
+        });
+
     }
 
 

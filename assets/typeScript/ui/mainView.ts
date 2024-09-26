@@ -254,7 +254,7 @@ export class mainView extends Component {
             if (gameData.saveData.userLevel < gameData.saveData.clear_level1){
                 EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(135))
             }
-            else if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy){
+            else if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy || gameData.saveData.inviteNumFoever >=10){
                 UIManager.open(UIManager.uiNamePath.popupClear2);
             }else{
                 UIManager.open(UIManager.uiNamePath.popupClear1);
@@ -266,7 +266,11 @@ export class mainView extends Component {
         //this.clearUnLock.node.active = false;
         this.clearLock.node.active = false;
         this.clearBtnLab.string = LanauageManager.getDesStrById(134);
-        if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy){
+        if (gameData.saveData.userLevel < gameData.saveData.clear_level1){
+            this.clearLock.node.active = true;
+            this.clearBtnLab.color = new Color("#FFFFFF")
+        }
+        else if (gameData.saveData.userLevel >= gameData.saveData.clear_level2 || gameData.saveData.clear_isBuy || gameData.saveData.inviteNumFoever >=10){
             this.clearUnLock.stopAnima();
             this.clearBtnLab.color = new Color("#F0F060")
         }else{

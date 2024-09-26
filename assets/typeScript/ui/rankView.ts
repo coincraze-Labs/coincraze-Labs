@@ -1,7 +1,7 @@
 import { _decorator, Component, instantiate, Label, Node, Prefab, Sprite } from 'cc';
 import { UIManager } from '../UIManager';
 import { gameData } from '../gameData';
-import { LanauageManager } from '../LanauageManager';
+import { LanauageManager, randItemData } from '../LanauageManager';
 import { HttpClient } from '../net/HttpClient';
 import { EventManger } from '../EventManger';
 import { rankItem } from '../item/rankItem';
@@ -42,7 +42,15 @@ export class rankView extends Component {
         //this.rankType = 1;
 
         EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GAME, this.refresh, this);
-        HttpClient.getInstance().sendGetRankData(this.rankType);
+        this.scheduleOnce(()=>{
+            HttpClient.getInstance().sendGetRankData(1)
+        },0);
+        this.scheduleOnce(()=>{
+            HttpClient.getInstance().sendGetRankData(2)
+        },1);
+        this.scheduleOnce(()=>{
+            HttpClient.getInstance().sendGetRankData(3)
+        },2);
     }
 
     protected onDisable(): void {
@@ -64,12 +72,13 @@ export class rankView extends Component {
         this.btn3Lab.string = LanauageManager.getDesStrById(30);
 
         let str = "0";
-        if (gameData.saveData.selfRank.rank > 0){
-            str = Math.floor((1- (gameData.saveData.selfRank.rank - 1) / (gameData.saveData.allPlayNum-1)) * 100) + "%"
+        let selfInfo:randItemData = gameData.saveData.selfRank[this.rankType]
+        if (selfInfo && selfInfo.rank > 0){
+            str = Math.floor((1- (selfInfo.rank - 1) / (gameData.saveData.allPlayNum-1)) * 100) + "%"
         }
         this.tipLab.string = LanauageManager.getDesStrById(82).replace("&1", str);
 
-        this.info = gameData.saveData.rankList;
+        this.info = gameData.saveData.rankList[this.rankType];
 
         if (!this.info){
             return;
@@ -92,25 +101,34 @@ export class rankView extends Component {
             item.getComponent('rankItem')?.refresh(itemData, this.rankType);    
         }
 
-        this.selfRank.refresh(gameData.saveData.selfRank, this.rankType);    
+        this.selfRank.refresh(selfInfo, this.rankType);    
     }
 
     onBtn1Click(){
+        if (this.rankType == 1){
+            return;
+        }
         this.rankType = 1;
         this.refresh();
-        HttpClient.getInstance().sendGetRankData(this.rankType);
+        //HttpClient.getInstance().sendGetRankData(this.rankType);
     }
 
     onBtn2lClick(){
+        if (this.rankType == 2){
+            return;
+        }
         this.rankType = 2;
         this.refresh();
-        HttpClient.getInstance().sendGetRankData(this.rankType);
+        //HttpClient.getInstance().sendGetRankData(this.rankType);
     }
 
     onBtn3Click(){
+        if (this.rankType == 3){
+            return;
+        }
         this.rankType = 3;
         this.refresh();
-        HttpClient.getInstance().sendGetRankData(this.rankType);
+        //HttpClient.getInstance().sendGetRankData(this.rankType);
     }
 
     onBackClick(){

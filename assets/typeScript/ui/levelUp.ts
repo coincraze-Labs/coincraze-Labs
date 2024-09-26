@@ -11,15 +11,20 @@ export class levelUp extends Component {
     @property(Label)  
     levelLab: Label = null; 
 
+    @property(AudioSource)  
+    audio: AudioSource = null; 
+
     onEnable() {
         this.refresh()
+        if (gameData.isPlaySound){
+            this.audio.stop();
+            this.audio.play();
+        }
     }
 
 
     refresh(){
-
         this.levelLab.string = gameData.saveData.userLevel.toString();
-
     }
 
     onBackClick(){
