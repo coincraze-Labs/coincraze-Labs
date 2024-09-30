@@ -19,6 +19,7 @@ export class tonConnect extends Component{
     private _cocosGameFi: GameFi;
     private _connectUI: WalletConnector;
 
+    private isFirst:boolean = true;
 
     public init(): void {
 
@@ -63,7 +64,6 @@ export class tonConnect extends Component{
         // }); 
 
         let uiconnector = new TonConnectUI({
-
             //manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json',
             manifestUrl: "https://www.coincraze.ai/tonconnect-manifest.json",
             walletsListConfiguration: {
@@ -110,7 +110,23 @@ export class tonConnect extends Component{
         });
 
         this._bTonInit = true;
+
+        setTimeout(() => {
+            this.isDisconnect();
+        }, 3000);
         this.updateConnect();
+    }
+
+    public isDisconnect(){
+        this.isFirst = false;
+        if (this.isConnected()) {
+            const address = this._connectUI.account.address;
+            gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: false, bounceable: false });
+            if (gameData.bindWalletNameShow && gameData.bindWalletName != gameData.bindWalletNameShow){
+                this._connectUI.disconnect();
+                console.log("auto disconnect")
+            }
+        } 
     }
 
     public isConnected(): boolean {
@@ -127,6 +143,12 @@ export class tonConnect extends Component{
         }else if (type == 2){
             //this.onBuyWithTon(coin);
         }
+        else if (type == 3){
+            if (!this._bTonInit) return;
+            if (this.isConnected()) {
+                this._connectUI.disconnect();
+            }
+        }
         else{
             this.openModal();
         }
@@ -141,8 +163,6 @@ export class tonConnect extends Component{
             this._connectUI.openModal();
         }
 
-
-
         const walletsList = await this._connectUI.getWallets();
         //TgManager.downloadTextFile("wallets", JSON.stringify(walletsList));
         console.log("walleteList: ", walletsList);
@@ -154,15 +174,17 @@ export class tonConnect extends Component{
             gameData.isBindWallet = true;
             gameData.cocosGameFi = this._cocosGameFi;
             gameData.bindWalletName = Address.parseRaw(address).toString({ testOnly: false, bounceable: false });
-            HttpClient.getInstance().sendWallet(1,  gameData.bindWalletName);
+            if (!this.isFirst || gameData.bindWalletNameShow == null){
+                gameData.bindWalletNameShow = gameData.bindWalletName;
+                HttpClient.getInstance().sendWallet(1, gameData.bindWalletName);
+            }
+
             //this.connectLabel.string = Address.parseRaw(address).toString({ testOnly: true, bounceable: false }).substring(0, 6) + '...';
         } else {
             //this.connectLabel.string = "Connect";
             gameData.bindWalletName = "";
             gameData.isBindWallet = false;
-            HttpClient.getInstance().sendWallet(2);
         }
-        
         EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME)
        
     }

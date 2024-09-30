@@ -124,6 +124,12 @@ export class game extends Component {
     @property({type:Node})
     loading:Node = null
 
+    @property({type:Node})
+    loadingClose:Node = null
+
+    @property({type:Label})
+    loadingLab:Label = null
+
     @property({type:Animation})
     passAni:Animation = null;
 
@@ -280,7 +286,7 @@ export class game extends Component {
 
         this.scheduleOnce(()=>{
             this.loadAnimation();
-        },7);
+        },5);
     }
 
     loadAnimation() {  
@@ -320,9 +326,16 @@ export class game extends Component {
         }); 
     }
 
-    private isLoadingShow(isShow:boolean){
+    private isLoadingShow(isShow:boolean, type:number = 1){
         if (isShow){
             this.scheduleOnce(this.changeLoading,0.3)
+            if(type == 2){
+                this.loadingClose.active = true;
+                this.loadingLab.string = LanauageManager.getDesStrById(144);
+            }else{
+                this.loadingClose.active = false;
+                this.loadingLab.string = "CONNECTING..."
+            }
         }else{
             this.unschedule(this.changeLoading);
             this.loading.active = isShow;
@@ -331,6 +344,11 @@ export class game extends Component {
 
     public changeLoading(){
         this.loading.active = true;
+    }
+
+    public closeLoading(){
+        
+        this.loading.active = false;
     }
 
     private isShowMainView(isShow:boolean){

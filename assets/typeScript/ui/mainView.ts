@@ -109,7 +109,7 @@ export class mainView extends Component {
     protected start(): void {
         EventManger.eventTarget.on(EventManger.EEventName.BLINK_ANIMATION, this.blikAnima, this);
 
-        this.scheduleOnce(this.loadAnimation, 5);
+        this.scheduleOnce(this.loadAnimation, 3);
     }
 
     onEnable() {
@@ -213,7 +213,7 @@ export class mainView extends Component {
             }
         }
         else if (str == "moneyBag"){
-            if (gameData.isBindWallet){
+            if (gameData.bindWalletNameShow){
                 LanauageManager.popupCommonlType = popupCommonType.disConnectWalletr;
                 UIManager.open(UIManager.uiNamePath.popupCommonBtn);
             }else{
@@ -302,12 +302,12 @@ export class mainView extends Component {
 
         this.userTwitterLab.string = gameData.isBindTwitter? LanauageManager.truncateString(gameData.bindTwitterName, 10, 2):"" //LanauageManager.getDesStrById( gameData.isBindTwitter? 63: 62 );
 
-        this.userBagLab.string = gameData.isBindWallet? LanauageManager.truncateString(gameData.bindWalletName, 10, 2):""//LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
+        this.userBagLab.string = gameData.bindWalletNameShow!=null? LanauageManager.truncateString(gameData.bindWalletNameShow, 10, 2):""//LanauageManager.getDesStrById( gameData.isBindWallet ? 63: 62 );
 
         this.userTwitterCon.node.active = gameData.isBindTwitter?false:true;
         this.userTwitterDis.node.active = !this.userTwitterCon.node.active;
 
-        this.userBagCon.node.active = gameData.isBindWallet? false: true;
+        this.userBagCon.node.active = gameData.bindWalletNameShow!=null ? false: true;
         this.userBagDis.node.active = ! this.userBagCon.node.active;
 
         this.offLine.active = gameData.saveData.offline_card_remaining_time > 0;

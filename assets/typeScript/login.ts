@@ -147,6 +147,7 @@ export class login extends Component {
             console.log("preload ui success")
             if (LanauageManager.isInitData){
                 director.loadScene("game", this.onComplete2) 
+                //director.loadScene("text", this.onComplete2) 
             }
             this.onComplete(); 
             //director.preloadScene("game", this.onComplete)

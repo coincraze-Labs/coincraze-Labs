@@ -3,6 +3,7 @@ import { HttpClient } from './net/HttpClient';
 import { randItemData, ShopItemData } from './LanauageManager';
 import { TgManager, TonAddressConfig } from './TgManager';
 import { GameFi } from '@ton/cocos-sdk';
+import { EventManger } from './EventManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('gameData')
@@ -56,6 +57,8 @@ export class gameData extends Component {
 
     public static bindWalletName:string = "";
 
+    public static bindWalletNameShow:string = null;
+
     public static bindTwitterName:string = "";
 
     public static isShowTip = true;
@@ -85,6 +88,7 @@ export class gameData extends Component {
                 if(data['success']){
                     console.log(id, curBuyCount)
                     HttpClient.getInstance().sendBuyShopItem(id, curBuyCount);
+                    EventManger.eventTarget.emit(EventManger.EEventName.LOADING_IS_SHOW, false);
                     clearInterval(intervalId);
                 }
             })  

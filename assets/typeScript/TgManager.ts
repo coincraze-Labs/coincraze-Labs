@@ -91,7 +91,10 @@ export class TgManager {
 
     public static disConnectWalletr(){
         LanauageManager.playSound();
-        EventManger.eventTarget.emit(EventManger.EEventName.OPEN_TON_CONNNECT);
+        HttpClient.getInstance().sendWallet(2);
+        gameData.bindWalletNameShow = null;
+        
+        EventManger.eventTarget.emit(EventManger.EEventName.OPEN_TON_CONNNECT, 3);
     }
 
     public static addVip(){
@@ -193,12 +196,17 @@ export class TgManager {
            TgManager.userDataInt.first_name = userData.user.first_name;
            TgManager.userDataInt.last_name = userData.user.last_name;
            TgManager.userDataInt.is_premium = userData.user.is_premium;
+
+
+           localStorage.setItem("coincraze_user_id", userData.user.id);
         }else{
             HttpClient.getInstance().sendLogin();
 
             setTimeout(() => {
                 HttpClient.getInstance().sendPremium(0);
             }, 2000); 
+
+            localStorage.setItem("coincraze_user_id", "1111111");
         }
     } 
 

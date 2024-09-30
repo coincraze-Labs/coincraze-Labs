@@ -188,6 +188,8 @@ export class popupBuyItem extends Component {
      async txVerify(hash:string,address:string) {
         gameData.popCallback(hash,address,gameData.curBuyShopData.id, gameData.curBuyCount)
         UIManager.close(UIManager.uiNamePath.popupBuyItem);
+
+        EventManger.eventTarget.emit(EventManger.EEventName.LOADING_IS_SHOW, true, 2);
       
     }
 }

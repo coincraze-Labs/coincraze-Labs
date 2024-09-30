@@ -5,9 +5,6 @@
       "base": {
         "_value": true
       },
-      "graphcis": {
-        "_value": true
-      },
       "gfx-webgl": {
         "_value": true
       },
@@ -22,6 +19,9 @@
       },
       "3d": {
         "_value": false
+      },
+      "meshopt": {
+        "_value": true
       },
       "2d": {
         "_value": true
@@ -94,7 +94,16 @@
       "tween": {
         "_value": true
       },
+      "websocket": {
+        "_value": true
+      },
+      "websocket-server": {
+        "_value": false
+      },
       "terrain": {
+        "_value": false
+      },
+      "light-probe": {
         "_value": false
       },
       "tiled-map": {
@@ -109,7 +118,13 @@
       "marionette": {
         "_value": false
       },
+      "procedural-animation": {
+        "_value": false
+      },
       "custom-pipeline": {
+        "_value": true
+      },
+      "graphcis": {
         "_value": true
       },
       "graphics": {
@@ -125,7 +140,6 @@
       "gfx-webgl",
       "gfx-webgl2",
       "intersection-2d",
-      "light-probe",
       "meshopt",
       "profiler",
       "tween",

@@ -147,6 +147,9 @@ export class HttpClient {
                     if (data.gameinfo.share_rank_num != undefined){
                         gameData.saveData.inviteNumFoever = data.gameinfo.share_rank_num;
                     }
+                    if (data.gameinfo.wallet_addr != undefined){
+                        gameData.bindWalletNameShow = data.gameinfo.wallet_addr;
+                    }
 
                 }
 
